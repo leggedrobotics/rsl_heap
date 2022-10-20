@@ -1,8 +1,9 @@
 # RSL HEAP
 This repository is a collection of material for the HEAP excavator at the Robotic Systems Lab at ETH Zurich.
 The main contributors of this repository and the linked resources  are (ordered alphatically by last name):
-Burak Cizmezi, Pascal Egli, Edo Jelavic, Ryan Johns, Dominic Jud, Simon Kerscher, Grzegorz Malczyk, Fang Nan, 
-Julian Nubert, Lorenzo Terenzi, Marco Tranzatto, Fan Yang
+
+**Burak Cizmezi, Pascal Egli, Edo Jelavic, Ryan Johns, Dominic Jud, Simon Kerscher, Grzegorz Malczyk, Fang Nan, 
+Julian Nubert, Lorenzo Terenzi, Marco Tranzatto, Fan Yang**
 
 <img src="doc/heap.jpg" width="50%" height="50%">
 
