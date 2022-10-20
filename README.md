@@ -13,7 +13,7 @@ The main content will consist of resources to run and reproduce our open-source 
 publiations and other material.
 
 ### HEAP URDF
-The [heap_urdf](heap_urdf/) directory contains a URDF with the full HEAP collision model.
+The [./heap_urdf](./heap_urdf) directory contains a URDF with the full HEAP collision model.
 
 ### Recent Publications
 #### 2022
