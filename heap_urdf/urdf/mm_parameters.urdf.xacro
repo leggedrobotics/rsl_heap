@@ -1,0 +1,849 @@
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:arg name="using_rototilt"	default="true"/>
+
+    <!--         		       -->
+    <!-- Simulation Parameters -->
+    <!--         		       -->
+    <!-- Other -->
+    <xacro:property name="max_effort"		value="1500000"/>
+    <xacro:property name="max_cyl_effort" 	value="200000"/>
+
+
+    <!--         		-->
+    <!-- M545 Excavator -->
+    <!--         		-->
+
+    <!--     Front		-->
+
+    <!-- Front Swivel Foot M545 parameters -->
+    <xacro:property name="M545_FSF_name" 				value="SWIVEL"/>
+    <xacro:property name="M545_FSF_c_box" 			value="0.58 0.22 0.5"/>
+    <xacro:property name="M545_FSF_c_xyz"				value="0.18 0 0"/>
+    <xacro:property name="M545_FSF_c_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_FSF_v_xyz"				value="0 0 0"/>
+    <xacro:property name="M545_FSF_v_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_FSF_mass" 				value="115"/>
+    <xacro:property name="M545_FSF_cog" 				value="0.163191642 ${reflect*0.020092442} 0.048603248"/>
+    <xacro:property name="M545_FSF_ixx" 				value="4.398905519"/>
+    <xacro:property name="M545_FSF_iyy" 				value="6.276839457"/>
+    <xacro:property name="M545_FSF_izz" 				value="4.062523726"/>
+    <xacro:property name="M545_FSF_iyz"					value="${reflect*(-0.325429239)}"/>
+    <xacro:property name="M545_FSF_ixz"					value="0.186769766"/>
+    <xacro:property name="M545_FSF_ixy"					value="${reflect*0.435031339}"/>
+
+    <!-- HFE -->
+    <xacro:property name="M545_FSF_j1_name" 			value="HFE"/>
+    <!-- beam -->
+    <xacro:property name="M545_FSF_j1_type" 			value="revolute"/>
+    <xacro:property name="M545_FSF_j1_xyz" 				value="0.28 ${reflect*0.0011} -0.0895"/>
+    <xacro:property name="M545_FSF_j1_axis" 			value="0 1 0"/>
+    <xacro:macro 	name="M545_FSF_j1_limits">
+        <limit lower="-0.3159" upper="0.8238" velocity="6.28" effort="${max_effort}"/>
+    </xacro:macro>
+    <xacro:macro 	name="M545_FSF_cyl1_limits">
+        <limit lower="0" upper="0.358" velocity="0.2" effort="${max_cyl_effort}"/>
+    </xacro:macro>
+
+    <!-- PARALLEL2 -->
+    <xacro:property name="M545_FSF_j2_name" 			value="PARALLEL2"/>
+    <xacro:property name="M545_FSF_j2_type" 			value="revolute"/>
+    <xacro:property name="M545_FSF_j2_xyz" 				value="0.4249 ${reflect*0.0017} 0.2105"/>
+    <xacro:property name="M545_FSF_j2_axis" 			value="0 1 0"/>
+    <xacro:macro 	name="M545_FSF_j2_limits">
+        <limit lower="-0.3159" upper="0.8238" velocity="6.28" effort="${max_effort}"/>
+    </xacro:macro>
+
+    <!-- Front Beam M545 parameters (F_beam+F_beam_cylinder) -->
+    <xacro:property name="M545_FBE_name"				value="BEAM"/>
+    <xacro:property name="M545_FBE_c_box"				value="1.1 0.28 0.25"/>
+    <xacro:property name="M545_FBE_c_xyz"				value="0.6 ${reflect*0.0} -0.025"/>
+    <xacro:property name="M545_FBE_c_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_FBE_v_xyz" 			value="0 0 0"/>
+    <xacro:property name="M545_FBE_v_rpy" 			value="0 0 0"/>
+    <xacro:property name="M545_FBE_mass" 				value="200"/>
+    <xacro:property name="M545_FBE_cog" 				value="0.584124663 ${reflect*0.0} 0.06694352"/>
+    <xacro:property name="M545_FBE_ixx" 				value="3.428979601"/>
+    <xacro:property name="M545_FBE_iyy" 				value="32.455741081"/>
+    <xacro:property name="M545_FBE_izz" 				value="30.021583564"/>
+    <xacro:property name="M545_FBE_iyz"					value="${reflect*(-0.000500570)}"/>
+    <xacro:property name="M545_FBE_ixz"					value="-0.112828418"/>
+    <xacro:property name="M545_FBE_ixy"					value="${reflect*(-0.211389264)}"/>
+
+    <!-- PARALLEL -->
+    <xacro:property name="M545_FBE_j1_name" 			value="PARALLEL"/>
+    <xacro:property name="M545_FBE_j1_type" 			value="revolute"/>
+    <xacro:property name="M545_FBE_j1_xyz" 				value="1.2 ${reflect*0.0} 0.0"/>
+    <xacro:property name="M545_FBE_j1_axis" 			value="0 1 0"/>
+    <xacro:macro 	name="M545_FBE_j1_limits">
+        <limit lower="-0.8238" upper="0.3159" velocity="6.28" effort="${max_effort}"/>
+    </xacro:macro>
+
+    <!-- Front Parallel Guide M545 parameters  -->
+    <xacro:property name="M545_FPG_name" 				value="PARALLEL"/>
+    <xacro:property name="M545_FPG_c_box" 			value="1.3 0.28 0.1"/>
+    <xacro:property name="M545_FPG_c_xyz"				value="0.6 ${reflect*0.0} 0.01"/>
+    <xacro:property name="M545_FPG_c_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_FPG_v_xyz" 			value="0 0 0"/>
+    <xacro:property name="M545_FPG_v_rpy" 			value="0 0 0"/>
+    <xacro:property name="M545_FPG_mass" 				value="75"/>
+    <xacro:property name="M545_FPG_cog" 				value="0.611997693 ${reflect*0.0} 0.014937547"/>
+    <xacro:property name="M545_FPG_ixx" 				value="0.764419514"/>
+    <xacro:property name="M545_FPG_iyy" 				value="7.442807074"/>
+    <xacro:property name="M545_FPG_izz" 				value="8.063270252"/>
+    <xacro:property name="M545_FPG_iyz"					value="${reflect*(-0.000675307)}"/>
+    <xacro:property name="M545_FPG_ixz"					value="0.066640819"/>
+    <xacro:property name="M545_FPG_ixy"					value="${reflect*(-0.000525074)}"/>
+
+    <!-- PARALLEL 3 -->
+    <xacro:property name="M545_FPG_j1_name" 			value="PARALLEL3"/>
+    <xacro:property name="M545_FPG_j1_type" 			value="ball"/>
+    <xacro:property name="M545_FPG_j1_xyz" 				value="0.145 ${reflect*0.0} 0.3"/>
+    <xacro:property name="M545_FPG_j1_axis" 			value="0 1 0"/>
+    <xacro:property name="M545_FPG_j1_limit_lower" 		value="-0.8238"/>
+    <xacro:property name="M545_FPG_j1_limit_upper" 		value="0.3159"/>
+    <xacro:property name="M545_FPG_j1_limit_velocity" value="6.28"/>
+    <xacro:property name="M545_FPG_j1_limit_effort" 	value="${max_effort}"/>
+
+    <!-- Front Bearing Block M545 parameters -->
+    <xacro:property name="M545_FBB_name" 				value="BEARING"/>
+    <xacro:property name="M545_FBB_c1_box" 				value="0.18 0.3 0.325"/>
+    <xacro:property name="M545_FBB_c1_xyz"				value="0.2 ${reflect*(0.2)} 0"/>
+    <xacro:property name="M545_FBB_c1_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_FBB_c2_box" 				value="0.275 0.275 0.525"/>
+    <xacro:property name="M545_FBB_c2_xyz"				value="0.125 ${reflect*(0.025)} 0.1"/>
+    <xacro:property name="M545_FBB_c2_rpy"				value="0 0.5 0"/>
+    <xacro:property name="M545_FBB_v_xyz" 				value="0 0 0"/>
+    <xacro:property name="M545_FBB_v_rpy" 				value="0 0 0"/>
+    <xacro:property name="M545_FBB_mass" 				value="100"/>
+    <xacro:property name="M545_FBB_cog" 				value="0.145288714 ${reflect*(-0.057062246)} 0.045380647"/>
+    <xacro:property name="M545_FBB_ixx" 				value="3.490730027"/>
+    <xacro:property name="M545_FBB_iyy" 				value="2.470939089"/>
+    <xacro:property name="M545_FBB_izz" 				value="2.219993630"/>
+    <xacro:property name="M545_FBB_iyz"					value="${reflect*(0.283572413)}"/>
+    <xacro:property name="M545_FBB_ixz"					value="0.050497166"/>
+    <xacro:property name="M545_FBB_ixy"					value="${reflect*(-0.367098034)}"/>
+
+    <!-- STEER  -->
+    <xacro:property name="M545_FBB_j1_name" 			value="STEER"/>
+    <xacro:property name="M545_FBB_j1_type" 			value="revolute"/>
+    <xacro:property name="M545_FBB_j1_xyz" 				value="0.235 ${reflect*(0.298)} -0.003"/>
+    <xacro:property name="M545_FBB_j1_axis" 			value="0 0 1"/>
+    <xacro:macro 	name="M545_FBB_j1_limits">
+        <xacro:if value="${(reflect+1)/2}">
+            <!-- true if reflect=1-->
+            <limit lower="-0.8517" upper="0.8115" velocity="6.28" effort="${max_effort}"/>
+            <!-- LF -->
+        </xacro:if>
+        <xacro:unless value="${(reflect+1)/2}">
+            <!-- true if reflect=-1-->
+            <limit lower="-0.8115" upper="0.8517" velocity="6.28" effort="${max_effort}"/>
+            <!-- RF -->
+        </xacro:unless>
+    </xacro:macro>
+    <xacro:macro 	name="M545_FBB_cyl1_limits">
+        <limit lower="0" upper="0.222" velocity="0.2" effort="${max_cyl_effort}"/>
+    </xacro:macro>
+
+
+    <!-- Front Knuckle M545 parameters (F_knuckle+F_knuckle_cylinder + mass of motor) -->
+    <xacro:property name="M545_FKN_name" 					value="KNUCKLE"/>
+    <xacro:property name="M545_FKN_c1_box"				value="0.35 0.15 0.35"/>
+    <xacro:property name="M545_FKN_c1_xyz"				value="0.075 ${reflect*0.075} 0"/>
+    <xacro:property name="M545_FKN_c1_rpy"				value="0 0 ${reflect*0.825}"/>
+    <xacro:property name="M545_FKN_c2_box"				value="0.4 0.3 0.2"/>
+    <xacro:property name="M545_FKN_c2_xyz"				value="0.35 ${reflect*(0)} 0"/>
+    <xacro:property name="M545_FKN_c2_rpy"				value="0 0 ${reflect*0.3}"/>
+    <xacro:property name="M545_FKN_c3_length"			value="0.35"/>
+    <xacro:property name="M545_FKN_c3_radius"			value="0.18"/>
+    <xacro:property name="M545_FKN_c3_xyz"				value="0.275 ${reflect*0.2} 0"/>
+    <xacro:property name="M545_FKN_c3_rpy"				value="1.57 0 0"/>
+    <xacro:property name="M545_FKN_v_xyz" 				value="0 0 0"/>
+    <xacro:property name="M545_FKN_v_rpy" 				value="0 0 0"/>
+    <xacro:property name="M545_FKN_mass" 				value="270"/>
+    <xacro:property name="M545_FKN_cog"					value="0.256156551 ${reflect*0.082176716} 0.030358334"/>
+    <xacro:property name="M545_FKN_ixx" 				value="6.9755496"/>
+    <!-- 2*3.487774800 (to estimate the inertia of the motor, which doubles the mass of this link)-->
+    <xacro:property name="M545_FKN_iyy" 				value="10.94537266"/>
+    <!-- 2*5.472686330 -->
+    <xacro:property name="M545_FKN_izz" 				value="12.678481354"/>
+    <!-- 2*6.339240677 -->
+    <xacro:property name="M545_FKN_iyz"					value="${reflect*(-0.003582388)}"/>
+    <!-- 2*-0.001791194 -->
+    <xacro:property name="M545_FKN_ixz"					value="0.00675143"/>
+    <!-- 2*0.003375715 -->
+    <xacro:property name="M545_FKN_ixy"					value="${reflect*(0.055209664)}"/>
+    <!-- 2*0.027604832 -->
+
+    <!-- WHEEL -->
+    <xacro:property name="M545_FKN_j1_name" 			value="WHEEL"/>
+    <xacro:property name="M545_FKN_j1_type" 			value="continuous"/>
+    <xacro:property name="M545_FKN_j1_xyz" 				value="0.27 ${reflect*0.471} 0.003"/>
+    <xacro:property name="M545_FKN_j1_axis" 			value="0 1 0"/>
+    <xacro:macro 	name="M545_FKN_j1_limits">
+        <limit velocity="6.28" effort="${max_effort}"/>
+    </xacro:macro>
+    <xacro:macro 	name="M545_FKN_cyl1_limits">
+        <limit velocity="4.45" effort="20000"/>
+    </xacro:macro>
+
+    <!-- Front Wheel M545 parameters -->
+    <xacro:property name="M545_FWH_name" 				value="WHEEL"/>
+    <xacro:property name="M545_FWH_radius" 			value="0.6296"/>
+    <xacro:property name="M545_FWH_length" 			value="0.01"/>
+    <xacro:property name="M545_FWH_c_xyz"				value="0 0 0"/>
+    <xacro:property name="M545_FWH_c_rpy"				value="1.57 0 0"/>
+    <xacro:property name="M545_FWH_v_xyz" 			value="0 0 0"/>
+    <xacro:property name="M545_FWH_v_rpy" 			value="0 0 0"/>
+    <xacro:property name="M545_FWH_mass" 				value="280"/>
+    <xacro:property name="M545_FWH_cog" 				value="0 ${reflect*0.007923201} 0"/>
+    <xacro:property name="M545_FWH_ixx" 				value="38.817750093"/>
+    <xacro:property name="M545_FWH_iyy" 				value="62.372189183"/>
+    <xacro:property name="M545_FWH_izz" 				value="38.815038925"/>
+    <xacro:property name="M545_FWH_iyz"					value="${reflect*0}"/>
+    <xacro:property name="M545_FWH_ixz"					value="0"/>
+    <xacro:property name="M545_FWH_ixy"					value="${reflect*0}"/>
+    <xacro:property name="M545_FWH_contact_xyz"				value="0.2701 ${reflect*0.4705} -0.6236"/>
+
+
+    <!--     Hind		-->
+
+    <!-- Hind Rotator M545 parameters -->
+    <xacro:property name="M545_HRO_name" 				value="ROTATOR"/>
+    <xacro:property name="M545_HRO_c_box" 			value="0.3607 0.404 0.4"/>
+    <xacro:property name="M545_HRO_c_xyz"				value="-0.05 ${reflect*0.0} 0.12"/>
+    <xacro:property name="M545_HRO_c_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_HRO_v_xyz" 				value="0 0 0"/>
+    <xacro:property name="M545_HRO_v_rpy" 				value="0 0 0"/>
+    <xacro:property name="M545_HRO_mass" 				value="115"/>
+    <xacro:property name="M545_HRO_cog" 				value="-0.090832234 ${reflect*0.002744135} 0.144031103"/>
+    <xacro:property name="M545_HRO_ixx" 				value="3.867796397"/>
+    <xacro:property name="M545_HRO_iyy" 				value="2.672208384"/>
+    <xacro:property name="M545_HRO_izz" 				value="2.648139472"/>
+    <xacro:property name="M545_HRO_iyz"					value="${reflect*0.135016030}"/>
+    <xacro:property name="M545_HRO_ixz"					value="0.253081550"/>
+    <xacro:property name="M545_HRO_ixy"					value="${reflect*0.203079468}"/>
+
+    <!-- HAA -->
+    <xacro:property name="M545_HRO_j1_name" 			value="HAA"/>
+    <xacro:property name="M545_HRO_j1_type" 			value="revolute"/>
+    <xacro:property name="M545_HRO_j1_xyz" 				value="-0.205 ${reflect*0.102} 0.12"/>
+    <xacro:property name="M545_HRO_j1_axis" 			value="0 0 1"/>
+    <xacro:macro 	name="M545_HRO_j1_limits">
+        <xacro:if value="${(reflect+1)/2}">
+            <!-- true if reflect=1-->
+            <limit lower="-0.731292957" upper="0.542797397" velocity="6.28" effort="${max_effort}"/>
+        </xacro:if>
+        <xacro:unless value="${(reflect+1)/2}">
+            <!-- true if reflect=-1-->
+            <limit lower="-0.542797397" upper="0.731292957" velocity="6.28" effort="${max_effort}"/>
+        </xacro:unless>
+    </xacro:macro>
+    <xacro:macro 	name="M545_HRO_cyl1_limits">
+        <limit lower="0" upper="0.305" velocity="0.2" effort="${max_cyl_effort}"/>
+    </xacro:macro>
+
+    <!-- Hind Beam M545 parameters (H_beam+H_beam_cylinder_upper+H_beam_cylinder_lower) -->
+    <xacro:property name="M545_HBE_name" 				value="BEAM"/>
+    <xacro:property name="M545_HBE_c_box" 				value="0.95 0.45 0.3"/>
+    <xacro:property name="M545_HBE_c_xyz"				value="-0.5 ${reflect*(-0.15)} 0.05"/>
+    <xacro:property name="M545_HBE_c_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_HBE_v_xyz" 				value="0 0 0"/>
+    <xacro:property name="M545_HBE_v_rpy" 				value="0 0 0"/>
+    <xacro:property name="M545_HBE_mass" 				value="280"/>
+    <xacro:property name="M545_HBE_cog" 				value="-0.48851373 ${reflect*(-0.042755794)} -0.038331283"/>
+    <xacro:property name="M545_HBE_ixx"					value="7.063603810"/>
+    <xacro:property name="M545_HBE_iyy"					value="24.488420582"/>
+    <xacro:property name="M545_HBE_izz"					value="27.012076439"/>
+    <xacro:property name="M545_HBE_iyz"					value="${reflect*0.498393128}"/>
+    <xacro:property name="M545_HBE_ixz"					value="-1.804851306"/>
+    <xacro:property name="M545_HBE_ixy"					value="${reflect*(-2.077029642)}"/>
+
+    <!-- STEER -->
+    <xacro:property name="M545_HBE_j1_name" 			value="STEER"/>
+    <xacro:property name="M545_HBE_j1_type" 			value="revolute"/>
+    <xacro:property name="M545_HBE_j1_xyz" 				value="-0.975 ${reflect*0.0} -0.045"/>
+    <xacro:property name="M545_HBE_j1_axis" 			value="0 0 1"/>
+    <xacro:macro 	name="M545_HBE_j1_limits">
+        <xacro:if value="${(reflect+1)/2}">
+            <!-- true if reflect=1-->
+            <limit lower="-0.816743" upper="1.2863077" velocity="6.28" effort="${max_effort}"/>
+        </xacro:if>
+        <xacro:unless value="${(reflect+1)/2}">
+            <!-- true if reflect=-1-->
+            <limit lower="-1.2863077" upper="0.816743" velocity="6.28" effort="${max_effort}"/>
+        </xacro:unless>
+    </xacro:macro>
+    <xacro:macro 	name="M545_HBE_cyl1_limits">
+        <limit lower="0" upper="0.142" velocity="0.2" effort="${max_cyl_effort}"/>
+    </xacro:macro>
+
+    <!-- Hind Knuckle M545 parameters (knuckle+H_knuckle_cylinder+outrigger_link_1) -->
+    <xacro:property name="M545_HKN_name" 				value="KNUCKLE"/>
+    <xacro:property name="M545_HKN_c_box"				value="0.8 0.2 0.55"/>
+    <xacro:property name="M545_HKN_c_xyz"				value="-0.4 ${reflect*0.0} 0.125"/>
+    <xacro:property name="M545_HKN_c_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_HKN_v_xyz" 				value="0 0 0"/>
+    <xacro:property name="M545_HKN_v_rpy" 				value="0 0 0"/>
+    <xacro:property name="M545_HKN_mass" 				value="370"/>
+    <xacro:property name="M545_HKN_cog" 				value="-0.419372367 ${reflect*0.213687621} 0.056306222"/>
+    <xacro:property name="M545_HKN_ixx" 				value="18.225198614"/>
+    <!-- 1.5*12.150132409 -->
+    <xacro:property name="M545_HKN_iyy" 				value="28.156282278"/>
+    <!-- 1.5*18.770854852 -->
+    <xacro:property name="M545_HKN_izz" 				value="29.142770892"/>
+    <!-- 1.5*19.428513928 -->
+    <xacro:property name="M545_HKN_iyz"					value="${reflect*2.506100865}"/>
+    <!-- 1.5*1.670733910 -->
+    <xacro:property name="M545_HKN_ixz"					value="-0.992617577"/>
+    <!-- 1.5*-0.661745051 -->
+    <xacro:property name="M545_HKN_ixy"					value="${reflect*(-3.808498443)}"/>
+    <!-- 1.5*-2.538998962 -->
+
+    <!-- WHEEL -->
+    <xacro:property name="M545_HKN_j1_name" 			value="WHEEL"/>
+    <xacro:property name="M545_HKN_j1_type" 			value="continuous"/>
+    <xacro:property name="M545_HKN_j1_xyz" 				value="-0.5 ${reflect*0.398} 0.0305"/>
+    <xacro:property name="M545_HKN_j1_axis" 			value="0 1 0"/>
+    <xacro:macro 	name="M545_HKN_j1_limits">
+        <limit velocity="6.28" effort="${max_effort}"/>
+    </xacro:macro>
+    <xacro:macro 	name="M545_HKN_cyl1_limits">
+        <limit velocity="4.45" effort="20000"/>
+    </xacro:macro>
+
+    <!-- CLAW -->
+    <xacro:property name="M545_HKN_j2_name" 			value="CLAW"/>
+    <xacro:property name="M545_HKN_j2_type" 			value="revolute"/>
+    <xacro:property name="M545_HKN_j2_xyz" 				value="-0.7921 ${reflect*0.019} -0.0105"/>
+    <xacro:property name="M545_HKN_j2_axis" 			value="0 1 0"/>
+    <xacro:macro 	name="M545_HKN_j2_limits">
+        <limit lower="-1.57" upper="1.57" velocity="6.28" effort="${max_effort}"/>
+        <!-- TODO -->
+    </xacro:macro>
+    <xacro:macro 	name="M545_HKN_cyl2_limits">
+        <limit lower="0" upper="0.264" velocity="0.2" effort="${max_cyl_effort}"/>
+    </xacro:macro>
+
+    <!-- Wheel M545 parameters -->
+    <xacro:property name="M545_HWH_name" 				value="WHEEL"/>
+    <xacro:property name="M545_HWH_c_xyz"				value="0 ${reflect*0} 0"/>
+    <xacro:property name="M545_HWH_c_rpy"				value="1.57 0 0"/>
+    <xacro:property name="M545_HWH_v_xyz" 				value="0 0 0"/>
+    <xacro:property name="M545_HWH_v_rpy" 				value="0 0 0"/>
+    <xacro:property name="M545_HWH_radius" 				value="0.6296"/>
+    <xacro:property name="M545_HWH_length" 				value="0.01"/>
+    <xacro:property name="M545_HWH_mass" 				value="280"/>
+    <xacro:property name="M545_HWH_cog" 				value="0 ${reflect*0.007923201} 0"/>
+    <xacro:property name="M545_HWH_ixx" 				value="38.817750093"/>
+    <xacro:property name="M545_HWH_iyy" 				value="62.372189183"/>
+    <xacro:property name="M545_HWH_izz" 				value="38.815038925"/>
+    <xacro:property name="M545_HWH_iyz"					value="${reflect*0}"/>
+    <xacro:property name="M545_HWH_ixz"					value="0"/>
+    <xacro:property name="M545_HWH_ixy"					value="${reflect*0}"/>
+    <xacro:property name="M545_HWH_contact_xyz"				value="-0.501 ${reflect*0.502} -0.6442"/>
+
+    <!-- Outrigger M545 parameters -->
+    <xacro:property name="M545_HOR_name" 				value="OUTRIGGER"/>
+    <xacro:property name="M545_HOR_c1_box" 				value="0.35 0.45 0.4"/>
+    <xacro:property name="M545_HOR_c1_xyz"				value="-0.725 ${reflect*(0)} -0.2"/>
+    <xacro:property name="M545_HOR_c1_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_HOR_c2_box" 				value="0.525 0.15 0.16"/>
+    <xacro:property name="M545_HOR_c2_xyz"				value="-0.325 ${reflect*(0)} -0.125"/>
+    <xacro:property name="M545_HOR_c2_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_HOR_v_xyz" 				value="0 0 0"/>
+    <xacro:property name="M545_HOR_v_rpy" 				value="0 0 0"/>
+    <xacro:property name="M545_HOR_mass" 				value="110"/>
+    <xacro:property name="M545_HOR_cog" 				value="-0.555493105 ${reflect*(0)} -0.140022870"/>
+    <xacro:property name="M545_HOR_ixx" 				value="2.214139767"/>
+    <xacro:property name="M545_HOR_iyy" 				value="5.356489473"/>
+    <xacro:property name="M545_HOR_izz" 				value="6.037643655"/>
+    <xacro:property name="M545_HOR_iyz"					value="${reflect*0}"/>
+    <xacro:property name="M545_HOR_ixz"					value="0.453481428"/>
+    <xacro:property name="M545_HOR_ixy"					value="${reflect*0}"/>
+
+
+    <!--     Chassis/Cabin		-->
+
+    <!-- Chassis M545 parameters (chassis+2*chassis_cylinder_inner + 2*chassis_cylinder_outer) -->
+    <xacro:property name="M545_Base_name" 				value="BASE"/>
+    <xacro:property name="M545_Base_c_box" 				value="1.15 1.8 0.475"/>
+    <xacro:property name="M545_Base_c_xyz"				value="-0.0 -0.0 0.225"/>
+    <xacro:property name="M545_Base_c_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_Base_v_xyz"				value="0 0 0"/>
+    <xacro:property name="M545_Base_v_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_Base_mass" 				value="1700"/>
+    <xacro:property name="M545_Base_cog" 				value="-0.011047979 -0.001668192 0.164556349"/>
+    <xacro:property name="M545_Base_ixx" 				value="712.367628108"/>
+    <xacro:property name="M545_Base_iyy" 				value="294.811317005"/>
+    <xacro:property name="M545_Base_izz" 				value="941.703378555"/>
+    <xacro:property name="M545_Base_iyz" 				value="0.440023384"/>
+    <xacro:property name="M545_Base_ixz" 				value="-0.923139486"/>
+    <xacro:property name="M545_Base_ixy" 				value="0.063171691"/>
+
+    <!--     HAA		-->
+    <xacro:property name="M545_Base_j1_name" 			value="HAA"/>
+    <xacro:property name="M545_Base_j1_type" 			value="revolute"/>
+    <xacro:property name="M545_Base_j1_xyz" 			value="0.550 ${reflect*0.85} 0.1335"/>
+    <xacro:property name="M545_Base_j1_axis" 			value="0 0 1"/>
+    <xacro:macro 	name="M545_Base_j1_limits">
+        <xacro:if value="${(reflect+1)/2}">
+            <!-- true if reflect=1-->
+            <limit lower="-0.5201" upper="0.7802" velocity="6.28" effort="${max_effort}"/>
+            <!-- LF -->
+        </xacro:if>
+        <xacro:unless value="${(reflect+1)/2}">
+            <!-- true if reflect=-1-->
+            <limit lower="-0.7802" upper="0.5201" velocity="6.28" effort="${max_effort}"/>
+            <!-- RF -->
+        </xacro:unless>
+    </xacro:macro>
+    <xacro:macro 	name="M545_Base_cyl1_limits">
+        <limit lower="0" upper="0.288" velocity="0.2" effort="${max_cyl_effort}"/>
+    </xacro:macro>
+
+    <!--     HFE		-->
+    <xacro:property name="M545_Base_j2_name" 			value="HFE"/>
+    <xacro:property name="M545_Base_j2_type" 			value="revolute"/>
+    <xacro:property name="M545_Base_j2_xyz" 			value="-0.640 ${reflect*0.755} 0.060"/>
+    <xacro:property name="M545_Base_j2_axis" 			value="0 1 0"/>
+    <xacro:macro 	name="M545_Base_j2_limits">
+        <limit lower="-0.8343" upper="0.2618" velocity="6.28" effort="${max_effort}"/>
+    </xacro:macro>
+    <xacro:macro 	name="M545_Base_cyl2_limits">
+        <limit lower="0" upper="0.358" velocity="0.2" effort="${max_cyl_effort}"/>
+    </xacro:macro>
+
+    <!--     TURN		-->
+    <xacro:property name="M545_Base_j3_name" 			value="TURN"/>
+    <xacro:property name="M545_Base_j3_type" 			value="continuous"/>
+    <xacro:property name="M545_Base_j3_xyz" 			value="0 0 0.516"/>
+    <xacro:property name="M545_Base_j3_axis" 			value="0 0 1"/>
+    <xacro:macro 	name="M545_Base_j3_limits">
+        <limit velocity="6.28" effort="${max_effort}"/>
+    </xacro:macro>
+    <xacro:macro 	name="M545_Base_cyl3_limits">
+        <limit velocity="1.047" effort="52000"/>
+    </xacro:macro>
+
+    <!--     UM_X		-->
+    <xacro:property name="M545_Base_j4_name" 			value="UM_X"/>
+    <xacro:property name="M545_Base_j4_type" 			value="prismatic"/>
+    <xacro:property name="M545_Base_j4_xyz" 			value="0 0 1.5"/>
+    <xacro:property name="M545_Base_j4_axis" 			value="1 0 0"/>
+    <xacro:macro 	name="M545_Base_j4_limits">
+        <limit lower="-10.0" upper="10.0" velocity="10.0" effort="500000"/>
+    </xacro:macro>
+
+
+    <!-- Cabin M545 parameters (see A. Michel documentation) -->
+    <xacro:property name="M545_Cabin_name" 				value="CABIN"/>
+    <xacro:property name="M545_Cabin_c1_box"			value="1.6 2.0 0.5"/>
+    <xacro:property name="M545_Cabin_c1_xyz"			value="0 0 0.25"/>
+    <xacro:property name="M545_Cabin_c1_rpy"			value="0 0 0"/>
+    <xacro:property name="M545_Cabin_c2_box"			value="1.7 1.45 1.3"/>
+    <xacro:property name="M545_Cabin_c2_xyz"			value="0.0 0.25 1.1"/>
+    <xacro:property name="M545_Cabin_c2_rpy"			value="0 0 0"/>
+    <xacro:property name="M545_Cabin_c3_radius"		value="0.425"/>
+    <xacro:property name="M545_Cabin_c3_length"		value="2.0"/>
+    <xacro:property name="M545_Cabin_c3_xyz"			value="-0.8 0 0.6"/>
+    <xacro:property name="M545_Cabin_c3_rpy"			value="1.57 0 0"/>
+    <xacro:property name="M545_Cabin_v_xyz"				value="0 0 0"/>
+    <xacro:property name="M545_Cabin_v_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_Cabin_mass" 				value="4400"/>
+    <xacro:property name="M545_Cabin_cog" 				value="-0.3727 0.1 0.9551"/>
+    <xacro:property name="M545_Cabin_ixx" 				value="2485.29"/>
+    <xacro:property name="M545_Cabin_iyy" 				value="1640.58"/>
+    <xacro:property name="M545_Cabin_izz" 				value="1600.99"/>
+    <xacro:property name="M545_Cabin_iyz" 				value="0"/>
+    <xacro:property name="M545_Cabin_ixz" 				value="0"/>
+    <xacro:property name="M545_Cabin_ixy" 				value="0"/>
+
+
+    <!--     BOOM		-->
+    <xacro:property name="M545_Cabin_j1_name" 			value="BOOM"/>
+    <xacro:property name="M545_Cabin_j1_type" 			value="revolute"/>
+    <xacro:property name="M545_Cabin_j1_xyz" 			value="0.703 -0.292 0.5494"/> <!-- cad "0.6975 -0.28 0.5494"-->
+    <xacro:property name="M545_Cabin_j1_axis" 			value="0 1 0"/>
+    <xacro:macro 	name="M545_Cabin_j1_limits">
+        <limit lower="-1.34" upper="0.44" velocity="6.28" effort="${max_effort}"/>
+    </xacro:macro>
+    <xacro:macro 	name="M545_Cabin_cyl1_limits">
+        <limit lower="0" upper="0.600" velocity="0.132" effort="379000"/>
+        <!--TODO-->
+    </xacro:macro>
+
+    <!-- Boom M545 parameters (see M.Rudin documentation) -->
+    <xacro:property name="M545_Boom_name" 				value="BOOM"/>
+    <xacro:property name="M545_Boom_c_box" 				value="3 0.4 0.25"/>
+    <xacro:property name="M545_Boom_c_xyz"				value="1.3 0.0 -0.05"/>
+    <xacro:property name="M545_Boom_c_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_Boom_v_xyz"				value="0 0 0"/>
+    <xacro:property name="M545_Boom_v_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_Boom_mass" 				value="1400"/>
+    <xacro:property name="M545_Boom_cog" 				value="1.38936 -0.0004 0.0178046"/>
+    <xacro:property name="M545_Boom_ixx" 				value="62.7074"/>
+    <xacro:property name="M545_Boom_iyy" 				value="3291.58"/>
+    <xacro:property name="M545_Boom_izz" 				value="3291.58"/>
+    <xacro:property name="M545_Boom_iyz" 				value="0.0295"/>
+    <xacro:property name="M545_Boom_ixz" 				value="89.1783"/>
+    <xacro:property name="M545_Boom_ixy" 				value="2.3197"/>
+
+    <!--     DIPPER		-->
+    <xacro:property name="M545_Boom_j1_name" 			value="DIPPER"/>
+    <xacro:property name="M545_Boom_j1_type" 			value="revolute"/>
+    <xacro:property name="M545_Boom_j1_xyz" 			value="2.84 0.0 0.0"/> <!-- CAD "2.85 0.0 0.0"-->
+    <xacro:property name="M545_Boom_j1_axis" 			value="0 1 0"/>
+    <xacro:macro 	name="M545_Boom_j1_limits">
+        <limit lower="0.58" upper="2.78" velocity="6.28" effort="${max_effort}"/>
+    </xacro:macro>
+    <xacro:macro 	name="M545_Boom_cyl1_limits">
+        <limit lower="0" upper="0.970" velocity="0.371" effort="283000"/>
+        <!--TODO-->
+    </xacro:macro>
+
+    <!-- Dipper 1 M545 parameters (see M.Rudin documentation)-->
+    <xacro:property name="M545_DIPPER_name" 				value="DIPPER"/>
+    <xacro:property name="M545_DIPPER_c_box" 				value="2.7 0.25 0.35"/>
+    <xacro:property name="M545_DIPPER_c_xyz"				value="0.15 0.0 0.32"/>
+    <xacro:property name="M545_DIPPER_c_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_DIPPER_v_xyz"				value="0 0 0"/>
+    <xacro:property name="M545_DIPPER_v_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_DIPPER_mass" 				value="1222.46"/>
+    <xacro:property name="M545_DIPPER_cog" 				value="0.0492387 0.000321755 0.0561925"/>
+    <xacro:property name="M545_DIPPER_ixx" 				value="12.198"/>
+    <xacro:property name="M545_DIPPER_iyy" 				value="388.5"/>
+    <xacro:property name="M545_DIPPER_izz" 				value="388.5"/>
+    <xacro:property name="M545_DIPPER_iyz" 				value="-0.0002"/>
+    <xacro:property name="M545_DIPPER_ixz" 				value="1.2570"/>
+    <xacro:property name="M545_DIPPER_ixy" 				value="0.2074"/>
+
+    <!--     TELE		-->
+    <xacro:property name="M545_DIPPER_j1_name" 			value="TELE"/>
+    <xacro:property name="M545_DIPPER_j1_type" 			value="prismatic"/>
+    <xacro:property name="M545_DIPPER_j1_xyz" 			value="0 0 0.369"/> <!-- CAD "0 0 0.366"-->
+    <xacro:property name="M545_DIPPER_j1_axis" 			value="1 0 0"/>
+    <xacro:macro 	name="M545_DIPPER_j1_limits">
+        <limit lower="0" upper="1.8" velocity="1" effort="${max_effort}"/>
+    </xacro:macro>
+    <xacro:macro 	name="M545_DIPPER_cyl1_limits">
+        <limit lower="0" upper="1.8" velocity="0.755" effort="191000"/>
+        <!--TODO-->
+    </xacro:macro>
+
+    <!-- TELE M545 parameters (see M.Rudin documentation)-->
+    <xacro:property name="M545_TELE_name" 				value="TELE"/>
+	<xacro:property name="M545_TELE_c1_box" 			value="2.8 0.25 0.3"/>
+    <xacro:property name="M545_TELE_c1_xyz"				value="0.6 0.0189 0.0"/>
+    <xacro:property name="M545_TELE_c1_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_TELE_c2_box" 			value="1.8 0.45 0.4"/>
+    <xacro:property name="M545_TELE_c2_xyz"				value="0.85 0.1 0.375"/>
+    <xacro:property name="M545_TELE_c2_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_TELE_v_xyz"				value="0 0 0"/>
+    <xacro:property name="M545_TELE_v_rpy"				value="0 0 0"/>
+    <xacro:property name="M545_TELE_mass" 				value="526.462"/>
+    <xacro:property name="M545_TELE_cog" 				value="1.57108 0.0 0.315267"/>
+    <xacro:property name="M545_TELE_ixx" 				value="48.2112"/>
+    <xacro:property name="M545_TELE_iyy" 				value="2345.62"/>
+    <xacro:property name="M545_TELE_izz" 				value="2345.62"/>
+    <xacro:property name="M545_TELE_iyz" 				value="3.0797"/>
+    <xacro:property name="M545_TELE_ixz" 				value="40.1757"/>
+    <xacro:property name="M545_TELE_ixy" 				value="-4.2332"/>
+
+    <!--     EE_PITCH		-->
+    <xacro:property name="M545_TELE_j1_name" 			value="EE_PITCH"/>
+    <xacro:property name="M545_TELE_j1_type" 			value="revolute"/>
+    <xacro:property name="M545_TELE_j1_xyz" 			value="2.0266 0 0"/> <!-- CAD "2.025 0 0"-->
+    <xacro:property name="M545_TELE_j1_axis" 			value="0 1 0"/>
+    <xacro:macro 	name="M545_TELE_j1_limits">
+        <limit lower="-0.35" upper="2.28" velocity="6.28" effort="${max_effort}"/>
+    </xacro:macro>
+    <xacro:macro 	name="M545_TELE_cyl1_limits">
+        <limit lower="0" upper="0.832" velocity="0.398" effort="151000"/>
+        <!--TODO-->
+    </xacro:macro>
+
+	<!-- ROTO_BASE -->
+	<xacro:property name="M545_ROTO_BASE_name" 				value="ROTO_BASE"/>
+	<xacro:property name="M545_ROTO_BASE_c_box" 			value="0.44 0.65 0.77"/>
+	<xacro:property name="M545_ROTO_BASE_c_xyz"				value="0.101 -0.001 0.301"/>
+	<xacro:property name="M545_ROTO_BASE_c_rpy"				value="0 0 0"/>
+	<xacro:property name="M545_ROTO_BASE_v_xyz"				value="0 0 0"/>
+	<xacro:property name="M545_ROTO_BASE_v_rpy"				value="0 0 0"/>
+	<xacro:property name="M545_ROTO_BASE_mass" 				value="128"/>
+	<xacro:property name="M545_ROTO_BASE_cog"				value="0.059285 0.00330444 0.387339"/>
+	<xacro:property name="M545_ROTO_BASE_ixx"				value="5.868"/>
+	<xacro:property name="M545_ROTO_BASE_iyy" 				value="4.22285"/>
+	<xacro:property name="M545_ROTO_BASE_izz" 				value="2.543"/>
+	<xacro:property name="M545_ROTO_BASE_iyz" 				value="0.115"/>
+	<xacro:property name="M545_ROTO_BASE_ixz" 				value="0.131"/>
+	<xacro:property name="M545_ROTO_BASE_ixy" 				value="-0.038"/>
+
+	<!--  EE_ROLL -->
+	<xacro:property name="M545_ROTO_BASE_j1_name" 			value="EE_ROLL"/>
+	<xacro:property name="M545_ROTO_BASE_j1_type" 			value="revolute"/>
+	<xacro:property name="M545_ROTO_BASE_j1_xyz" 			value="0.263 0 0.342"/>
+	<xacro:property name="M545_ROTO_BASE_j1_axis" 			value="0 0 1"/>
+	<xacro:macro 	name="M545_ROTO_BASE_j1_limits">
+        <limit lower="-0.698" upper="0.698" velocity="6.28" effort="40500"/>
+	</xacro:macro>
+
+	<!-- ROTO -->
+	<xacro:property name="M545_ROTO_name" 				value="ROTO"/>
+	<xacro:property name="M545_ROTO_c_box" 			value="0.27 0.56 0.68"/>
+	<xacro:property name="M545_ROTO_c_xyz"				value="0.051 0.009 0.0"/>
+	<xacro:property name="M545_ROTO_c_rpy"				value="0 0 0"/>
+	<xacro:property name="M545_ROTO_v_xyz"				value="0 0 0.0225"/>
+	<xacro:property name="M545_ROTO_v_rpy"				value="0 0 0"/>
+	<xacro:property name="M545_ROTO_mass" 				value="260.0"/>
+	<xacro:property name="M545_ROTO_cog"				value="0.0749009 -0.00404749  0.00135156"/>
+	<xacro:property name="M545_ROTO_ixx"				value="5.289"/>
+	<xacro:property name="M545_ROTO_iyy" 				value="3.868"/>
+	<xacro:property name="M545_ROTO_izz" 				value="2.193"/>
+	<xacro:property name="M545_ROTO_iyz" 				value="-0.124"/>
+	<xacro:property name="M545_ROTO_ixz" 				value="-0.019"/>
+	<xacro:property name="M545_ROTO_ixy" 				value="0.019"/>
+
+	<!-- EE_YAW -->
+	<xacro:property name="M545_ROTO_j1_name" 			value="EE_YAW"/>
+	<xacro:property name="M545_ROTO_j1_type" 			value="continuous"/>
+	<xacro:property name="M545_ROTO_j1_xyz" 			value="0.147 0 0"/>
+	<xacro:property name="M545_ROTO_j1_axis" 			value="1 0 0"/>
+	<xacro:macro 	name="M545_ROTO_j1_limits">
+        <limit velocity="0.898" effort="8200"/>
+	</xacro:macro>
+
+	<!-- ENDEFFECTOR -->
+	<xacro:property name="M545_EE_name" 			value="ENDEFFECTOR"/>
+	<xacro:property name="M545_EE_c_box" 			value="0.19 0.43 0.53"/>
+	<xacro:property name="M545_EE_c_xyz"			value="0.127 0 0.044"/>
+	<xacro:property name="M545_EE_c_rpy"			value="0 0 0"/>
+	<xacro:property name="M545_EE_v_xyz"			value="0 0 0"/>
+	<xacro:property name="M545_EE_v_rpy"			value="0 0 0"/>
+	<xacro:property name="M545_EE_mass" 			value="125"/>
+	<xacro:property name="M545_EE_cog"				value="0.0987 0.0000 0.0266"/>
+	<xacro:property name="M545_EE_ixx"				value="1.806"/>
+	<xacro:property name="M545_EE_iyy" 				value="1.391"/>
+	<xacro:property name="M545_EE_izz" 				value="0.848"/>
+	<xacro:property name="M545_EE_iyz" 				value="0.000"/>
+	<xacro:property name="M545_EE_ixz" 				value="-0.027"/>
+	<xacro:property name="M545_EE_ixy" 				value="0.000"/>
+
+	<!-- ROTO3EE -->
+	<xacro:property name="M545_EE_j1_name" 			value="ROTO3EE"/>
+	<xacro:property name="M545_EE_j1_type" 			value="fixed"/>
+	<xacro:property name="M545_EE_j1_xyz" 			value="0.148 0 -0.149"/>
+
+	<!-- CG roku_mega_force_torque_sensor -->
+	<xacro:property name="M545_FT_name" 			value="MEGA_FT_SENSOR"/>
+	<xacro:property name="M545_FT_type" 			value="fixed"/>
+	<xacro:property name="M545_FT_MOUNT_xyz" 		value="0.11 0 -0.175675"/>
+
+
+
+	<!--     SHOVEL		-->
+  <xacro:property name="M545_SHOVEL_name" 				value="SHOVEL"/>
+  <xacro:property name="M545_SHOVEL_c_box" 				value="0.75 1.5 0.9"/>
+  <xacro:property name="M545_SHOVEL_c_xyz"				value="0.40 0 0.21"/>
+  <xacro:property name="M545_SHOVEL_c_rpy"				value="0 -0.25 0"/>
+  <xacro:property name="M545_SHOVEL_v_xyz"				value="0 0 0"/>
+  <xacro:property name="M545_SHOVEL_v_rpy"				value="0 0 0"/>
+  <xacro:property name="M545_SHOVEL_mass" 				value="480"/>
+  <xacro:property name="M545_SHOVEL_cog"					value="0.15 0.00015 0.147"/>
+  <xacro:property name="M545_SHOVEL_ixx"					value="90.956"/>
+  <xacro:property name="M545_SHOVEL_iyy" 					value="70.6513"/>
+  <xacro:property name="M545_SHOVEL_izz" 					value="70.6513"/>
+  <xacro:property name="M545_SHOVEL_iyz" 					value="-0.01441"/>
+  <xacro:property name="M545_SHOVEL_ixz" 					value="-7.54324"/>
+  <xacro:property name="M545_SHOVEL_ixy" 					value="-0.03157"/>
+
+
+	<!-- GRIPPER_BASE -->
+	<xacro:property name="M545_GRIPPER_BASE_name" 				value="GRIPPER_BASE"/>
+  <xacro:property name="M545_GRIPPER_BASE_c_box" 				value="0.01 0.01 0.01"/>
+  <xacro:property name="M545_GRIPPER_BASE_c_xyz"				value="0.40 0 0.21"/>
+  <xacro:property name="M545_GRIPPER_BASE_c_rpy"				value="0 -0.25 0"/>
+  <xacro:property name="M545_GRIPPER_BASE_v_xyz"				value="0 0.14 0"/>
+  <xacro:property name="M545_GRIPPER_BASE_v_rpy"				value="0 -1.01 0"/>
+  <xacro:property name="M545_GRIPPER_BASE_mass" 				value="52.1"/>
+  <xacro:property name="M545_GRIPPER_BASE_cog"					value="0.063 -0.001 0.174"/>
+  <xacro:property name="M545_GRIPPER_BASE_ixx"					value="1.824"/>
+  <xacro:property name="M545_GRIPPER_BASE_iyy" 					value="1.084"/>
+  <xacro:property name="M545_GRIPPER_BASE_izz" 					value="1.099"/>
+  <xacro:property name="M545_GRIPPER_BASE_iyz" 					value="-0.0005"/>
+  <xacro:property name="M545_GRIPPER_BASE_ixz" 					value="0.0004"/>
+  <xacro:property name="M545_GRIPPER_BASE_ixy" 					value="0.0002"/>
+
+	<!-- GRIPPER BASE2ANGLE -->
+  <xacro:property name="M545_GRIPPER_BASE_j1_name" 			value="BASE2ANGLE"/>
+  <xacro:property name="M545_GRIPPER_BASE_j1_type" 			value="fixed"/>
+  <xacro:property name="M545_GRIPPER_BASE_j1_xyz" 			value="0.13 0 0.174"/>
+  <xacro:property name="M545_GRIPPER_BASE_j1_rpy"			value="1.57079632679 0 0"/>
+
+  <!-- GRIPPER_ANGLE -->
+  <xacro:property name="M545_GRIPPER_ANGLE_name" 				value="GRIPPER_ANGLE"/>
+  <xacro:property name="M545_GRIPPER_ANGLE_c_box" 				value="0.01 0.01 0.01"/>
+  <xacro:property name="M545_GRIPPER_ANGLE_c_xyz"				value="0.35 0.35 0.35"/>
+  <xacro:property name="M545_GRIPPER_ANGLE_c_rpy"				value="0 0 0"/>
+  <xacro:property name="M545_GRIPPER_ANGLE_v_xyz"				value="0 0 0"/>
+  <xacro:property name="M545_GRIPPER_ANGLE_v_rpy"				value="0 0 0"/>
+  <xacro:property name="M545_GRIPPER_ANGLE_mass" 				value="61"/>
+  <xacro:property name="M545_GRIPPER_ANGLE_cog"					value="0.136 0.029 0"/>
+  <xacro:property name="M545_GRIPPER_ANGLE_ixx"					value="1.207"/>
+  <xacro:property name="M545_GRIPPER_ANGLE_iyy" 					value="1.250"/>
+  <xacro:property name="M545_GRIPPER_ANGLE_izz" 					value="1.469"/>
+  <xacro:property name="M545_GRIPPER_ANGLE_iyz" 					value="0"/>
+  <xacro:property name="M545_GRIPPER_ANGLE_ixz" 					value="0"/>
+  <xacro:property name="M545_GRIPPER_ANGLE_ixy" 					value="0.185"/>
+
+  <!-- GRIPPER ANGLE2ROTATE -->
+  <xacro:property name="M545_GRIPPER_ANGLE_j1_name" 			value="ANGLE2ROTATE"/>
+  <xacro:property name="M545_GRIPPER_ANGLE_j1_type" 			value="fixed"/>
+  <xacro:property name="M545_GRIPPER_ANGLE_j1_xyz" 			value="0.219 0.130 0"/>
+  <xacro:property name="M545_GRIPPER_ANGLE_j1_rpy"              value="0 0 1.309"/>
+
+      <!-- GRIPPER_ROTATE -->
+  <xacro:property name="M545_GRIPPER_ROTATE_name" 				value="GRIPPER_ROTATE"/>
+  <xacro:property name="M545_GRIPPER_ROTATE_c_box" 				value="0.47 0.55 1.0"/>
+  <xacro:property name="M545_GRIPPER_ROTATE_c_xyz"				value="0.21 0 0"/>
+  <xacro:property name="M545_GRIPPER_ROTATE_c_rpy"				value="0 0 0"/>
+  <xacro:property name="M545_GRIPPER_ROTATE_v_xyz"				value="0 0 0"/>
+  <xacro:property name="M545_GRIPPER_ROTATE_v_rpy"				value="0 -1.57079632679 0"/>
+  <xacro:property name="M545_GRIPPER_ROTATE_mass" 				value="267"/>
+  <xacro:property name="M545_GRIPPER_ROTATE_cog"					value="0.258 0 0"/>
+  <xacro:property name="M545_GRIPPER_ROTATE_ixx"					value="15.415"/>
+  <xacro:property name="M545_GRIPPER_ROTATE_iyy" 					value="18.347"/>
+  <xacro:property name="M545_GRIPPER_ROTATE_izz" 					value="17.015"/>
+  <xacro:property name="M545_GRIPPER_ROTATE_iyz" 					value="0.0003"/>
+  <xacro:property name="M545_GRIPPER_ROTATE_ixz" 					value="-0.0012"/>
+  <xacro:property name="M545_GRIPPER_ROTATE_ixy" 					value="0.0003"/>
+
+  <!--  ROT_3TOOTHED -->
+	<xacro:property name="M545_GRIPPER_ROTATE_j1_name" 			value="ROT_3TOOTHED"/>
+	<xacro:property name="M545_GRIPPER_ROTATE_j1_type" 			value="revolute"/>
+	<xacro:property name="M545_GRIPPER_ROTATE_j1_xyz" 			value="0.31 0.31 -0.41"/>
+	<xacro:property name="M545_GRIPPER_ROTATE_j1_axis" 			value="0 1 0"/>
+	<xacro:macro 	name="M545_GRIPPER_ROTATE_j1_limits">
+        <limit lower="-0.8" upper="0.8" velocity="6.28" effort="40500"/>
+	</xacro:macro>
+
+  <!--	GRIPPER_3TOOTHED	-->
+  <xacro:property name="M545_GRIPPER_3TOOTHED_name" 				value="GRIPPER_3TOOTHED"/>
+  <xacro:property name="M545_GRIPPER_3TOOTHED_c_box" 				value="0.9 0.6 0.3"/>
+  <xacro:property name="M545_GRIPPER_3TOOTHED_c_xyz"				value="0.354 -0.3 -0.252"/>
+  <xacro:property name="M545_GRIPPER_3TOOTHED_c_rpy"				value="0 0 0"/>
+  <xacro:property name="M545_GRIPPER_3TOOTHED_v_xyz"				value="0 0 0"/>
+  <xacro:property name="M545_GRIPPER_3TOOTHED_v_rpy"				value="0 -0.21 0"/>
+  <xacro:property name="M545_GRIPPER_3TOOTHED_mass" 				value="233"/>
+  <xacro:property name="M545_GRIPPER_3TOOTHED_cog"					value="0.177 -0.3 -0.187"/>
+  <xacro:property name="M545_GRIPPER_3TOOTHED_ixx"					value="11.016"/>
+  <xacro:property name="M545_GRIPPER_3TOOTHED_iyy" 					value="15.909"/>
+  <xacro:property name="M545_GRIPPER_3TOOTHED_izz" 					value="22.403"/>
+  <xacro:property name="M545_GRIPPER_3TOOTHED_iyz" 					value="-0.003"/>
+  <xacro:property name="M545_GRIPPER_3TOOTHED_ixz" 					value="-2.047"/>
+  <xacro:property name="M545_GRIPPER_3TOOTHED_ixy" 					value="0.004"/>
+
+  <!--  ROT_2TOOTHED -->
+	<xacro:property name="M545_GRIPPER_ROTATE_j2_name" 			value="ROT_2TOOTHED"/>
+	<xacro:property name="M545_GRIPPER_ROTATE_j2_type" 			value="revolute"/>
+	<xacro:property name="M545_GRIPPER_ROTATE_j2_xyz" 			value="0.31 0.31 0.41"/>
+	<xacro:property name="M545_GRIPPER_ROTATE_j2_axis" 			value="0 1 0"/>
+	<xacro:macro 	name="M545_GRIPPER_ROTATE_j2_limits">
+        <limit lower="-0.8" upper="0.8" velocity="6.28" effort="40500"/>
+	</xacro:macro>
+
+  <!--	GRIPPER_2TOOTHED	-->
+  <xacro:property name="M545_GRIPPER_2TOOTHED_name" 				value="GRIPPER_2TOOTHED"/>
+  <xacro:property name="M545_GRIPPER_2TOOTHED_c_box" 				value="0.9 0.6 0.306"/>
+  <xacro:property name="M545_GRIPPER_2TOOTHED_c_xyz"				value="0.336 -0.31 0.253"/>
+  <xacro:property name="M545_GRIPPER_2TOOTHED_c_rpy"				value="0 0 0"/>
+  <xacro:property name="M545_GRIPPER_2TOOTHED_v_xyz"				value="0 0 0"/>
+  <xacro:property name="M545_GRIPPER_2TOOTHED_v_rpy"				value="0 -1.83 0"/>
+  <xacro:property name="M545_GRIPPER_2TOOTHED_mass" 				value="226"/>
+  <xacro:property name="M545_GRIPPER_2TOOTHED_cog"					value="0.165 -0.31 0.19"/>
+  <xacro:property name="M545_GRIPPER_2TOOTHED_ixx"					value="10.823"/>
+  <xacro:property name="M545_GRIPPER_2TOOTHED_iyy" 					value="15.28"/>
+  <xacro:property name="M545_GRIPPER_2TOOTHED_izz" 					value="21.678"/>
+  <xacro:property name="M545_GRIPPER_2TOOTHED_iyz" 					value="0.007"/>
+  <xacro:property name="M545_GRIPPER_2TOOTHED_ixz" 					value="2.236"/>
+  <xacro:property name="M545_GRIPPER_2TOOTHED_ixy" 					value="0.01"/>
+
+  <!--  2TOOTHED_CONNECTOR -->
+	<xacro:property name="M545_GRIPPER_2TOOTHED_j1_name" 			value="2TOOTHED_CONNECTOR"/>
+	<xacro:property name="M545_GRIPPER_2TOOTHED_j1_type" 			value="revolute"/>
+	<xacro:property name="M545_GRIPPER_2TOOTHED_j1_xyz" 			value="0.263 0 0.3645"/>
+	<xacro:property name="M545_GRIPPER_2TOOTHED_j1_axis" 			value="0 0 1"/>
+	<xacro:macro 	name="M545_GRIPPER_3TOOTHED_j1_limits">
+        <limit lower="-0.52" upper="0.52" velocity="6.28" effort="40500"/>
+	</xacro:macro>
+
+  <!--  3TOOTHED_CONNECTOR -->
+	<xacro:property name="M545_GRIPPER_3TOOTHED_j1_name" 			value="3TOOTHED_CONNECTOR"/>
+	<xacro:property name="M545_GRIPPER_3TOOTHED_j1_type" 			value="revolute"/>
+	<xacro:property name="M545_GRIPPER_3TOOTHED_j1_xyz" 			value="0.263 0 0.3645"/>
+	<xacro:property name="M545_GRIPPER_3TOOTHED_j1_axis" 			value="0 0 1"/>
+	<xacro:macro 	name="M545_GRIPPER_3TOOTHED_j1_limits">
+        <limit lower="-0.698" upper="0.698" velocity="6.28" effort="40500"/>
+	</xacro:macro>
+
+  <!--  3TOOTHED_CYLINDER_O -->
+	<xacro:property name="M545_GRIPPER_3TOOTHED_j2_name" 			value="3TOOTHED_CYLINDER_O"/>
+	<xacro:property name="M545_GRIPPER_3TOOTHED_j2_type" 			value="revolute"/>
+	<xacro:property name="M545_GRIPPER_3TOOTHED_j2_xyz" 			value="0.263 0 0.3645"/>
+	<xacro:property name="M545_GRIPPER_3TOOTHED_j2_axis" 			value="0 0 1"/>
+	<xacro:macro 	name="M545_GRIPPER_3TOOTHED_j2_limits">
+        <limit lower="-0.698" upper="0.698" velocity="6.28" effort="40500"/>
+	</xacro:macro>
+
+  <!--  2TOOTHED_CYLINDER_I -->
+	<xacro:property name="M545_GRIPPER_2TOOTHED_j2_name" 			value="2TOOTHED_CYLINDER_I"/>
+	<xacro:property name="M545_GRIPPER_2TOOTHED_j2_type" 			value="revolute"/>
+	<xacro:property name="M545_GRIPPER_2TOOTHED_j2_xyz" 			value="0.263 0 0.3645"/>
+	<xacro:property name="M545_GRIPPER_2TOOTHED_j2_axis" 			value="0 0 1"/>
+	<xacro:macro 	name="M545_GRIPPER_2TOOTHED_j2_limits">
+        <limit lower="-0.698" upper="0.698" velocity="6.28" effort="40500"/>
+	</xacro:macro>
+
+    <!-- Virtual upper machine attachment link-->
+    <xacro:property name="M545_UM_ATTACHMENT_name" 		value="UM_ATTACHMENT"/>
+	<xacro:property name="M545_UM_ATTACHMENT_c_box" 	value="0 0 0"/>
+    <xacro:property name="M545_UM_ATTACHMENT_c_xyz"	    value="0 0 0"/>
+    <xacro:property name="M545_UM_ATTACHMENT_c_rpy"	    value="0 0 0"/>
+    <xacro:property name="M545_UM_ATTACHMENT_v_xyz"		value="0 0 0"/>
+    <xacro:property name="M545_UM_ATTACHMENT_v_rpy"		value="0 0 0"/>
+    <xacro:property name="M545_UM_ATTACHMENT_mass" 		value="1"/>
+    <xacro:property name="M545_UM_ATTACHMENT_cog" 		value="0 0 0"/>
+    <xacro:property name="M545_UM_ATTACHMENT_ixx" 		value="1"/>
+    <xacro:property name="M545_UM_ATTACHMENT_iyy" 		value="1"/>
+    <xacro:property name="M545_UM_ATTACHMENT_izz" 		value="1"/>
+    <xacro:property name="M545_UM_ATTACHMENT_iyz" 		value="0"/>
+    <xacro:property name="M545_UM_ATTACHMENT_ixz" 		value="0"/>
+    <xacro:property name="M545_UM_ATTACHMENT_ixy" 		value="0"/>
+
+    <!-- UM_Y -->
+    <xacro:property name="M545_UM_ATTACHMENT_j1_name" 	value="UM_Y"/>
+    <xacro:property name="M545_UM_ATTACHMENT_j1_type" 	value="prismatic"/>
+    <xacro:property name="M545_UM_ATTACHMENT_j1_xyz" 	value="0 0 0"/>
+    <xacro:property name="M545_UM_ATTACHMENT_j1_axis" 	value="0 1 0"/>
+    <xacro:macro 	name="M545_UM_ATTACHMENT_j1_limits">
+        <limit lower="-10.0" upper="10.0" velocity="10.0" effort="500000"/>
+    </xacro:macro>
+
+
+    <!-- Virtual upper machine point mass -->
+    <xacro:property name="M545_UM_MASS_name"        value="UM_MASS"/>
+    <xacro:property name="M545_UM_MASS_c_box" 		value="0.2 0.2 0.2"/>
+    <xacro:property name="M545_UM_MASS_c_xyz"		value="0 0 0"/>
+    <xacro:property name="M545_UM_MASS_c_rpy"		value="0 0 0"/>
+    <xacro:property name="M545_UM_MASS_v_xyz"		value="0 0 0"/>
+    <xacro:property name="M545_UM_MASS_v_rpy"		value="0 0 0"/>
+    <xacro:property name="M545_UM_MASS_mass" 		value="6500"/>
+    <xacro:property name="M545_UM_MASS_cog" 		value="0 0 0"/>
+    <xacro:property name="M545_UM_MASS_ixx" 		value="1"/>
+    <xacro:property name="M545_UM_MASS_iyy" 		value="1"/>
+    <xacro:property name="M545_UM_MASS_izz" 		value="1"/>
+    <xacro:property name="M545_UM_MASS_iyz" 		value="0"/>
+    <xacro:property name="M545_UM_MASS_ixz" 		value="0"/>
+    <xacro:property name="M545_UM_MASS_ixy" 		value="0"/>
+</robot>

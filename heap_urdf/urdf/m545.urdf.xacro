@@ -1,0 +1,136 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="M545">
+    <xacro:include filename="$(find heap_urdf)/urdf/mm_parameters.urdf.xacro"/>
+    <xacro:include filename="$(find heap_urdf)/urdf/utils/xacro_utils.urdf.xacro"/>
+    <xacro:include filename="$(find heap_urdf)/urdf/utils/gazebo_utils.urdf.xacro"/>
+    <xacro:include filename="$(find heap_urdf)/urdf/utils/mm_utils.urdf.xacro"/>
+    <xacro:include filename="$(find heap_urdf)/urdf/mm_segments.urdf.xacro"/>
+    <xacro:include filename="$(find heap_urdf)/urdf/sensors/ellipseA_SBG.urdf.xacro"/>
+    <xacro:include filename="$(find heap_urdf)/urdf/sensors/leica_GNSS.urdf.xacro"/>
+
+    <xacro:arg name="plugin_file" default="libm545_gazebo_plugin.so"/>
+    <gazebo>
+        <plugin name="Plugin_M545" filename="$(arg plugin_file)">
+            <max_effort>${max_effort}</max_effort>
+        </plugin>
+    </gazebo>
+
+    <static>false</static>
+
+    <xacro:m545_chassis/>
+
+    <!-- Add complete left side -->
+    <xacro:property name="reflect" 	value="1"/>
+    <xacro:include filename="$(find heap_urdf)/urdf/mm_parameters.urdf.xacro"/>
+    <xacro:m545_front_swivel_foot 			    prefix="LF" reflect="1"/>
+    <xacro:m545_front_beam 				        prefix="LF" reflect="1"/>
+    <xacro:m545_front_parallel_guide 			prefix="LF" reflect="1"/>
+    <xacro:m545_front_gazebo_parallel_joint 	prefix="LF" reflect="1"/>
+    <xacro:m545_front_bearing_block 			prefix="LF" reflect="1"/>
+    <xacro:m545_front_knuckle 				    prefix="LF" reflect="1"/>
+    <xacro:m545_front_wheel 					prefix="LF" reflect="1"/>
+    <xacro:m545_hind_rotator 					prefix="LH" reflect="1"/>
+    <xacro:m545_hind_beam 					    prefix="LH" reflect="1"/>
+    <xacro:m545_hind_knuckle 					prefix="LH" reflect="1"/>
+    <xacro:m545_hind_wheel 					    prefix="LH" reflect="1"/>
+    <xacro:m545_hind_outrigger 				    prefix="LH" reflect="1"/>
+
+    <!-- Add complete right side -->
+    <xacro:property name="reflect" 	value="-1"/>
+    <xacro:include filename="$(find heap_urdf)/urdf/mm_parameters.urdf.xacro"/>
+    <xacro:m545_front_swivel_foot 			    prefix="RF" reflect="-1"/>
+    <xacro:m545_front_beam 				        prefix="RF" reflect="-1"/>
+    <xacro:m545_front_parallel_guide 			prefix="RF" reflect="-1"/>
+    <xacro:m545_front_gazebo_parallel_joint 	prefix="RF" reflect="-1"/>
+    <xacro:m545_front_bearing_block 			prefix="RF" reflect="-1"/>
+    <xacro:m545_front_knuckle 				    prefix="RF" reflect="-1"/>
+    <xacro:m545_front_wheel 					prefix="RF" reflect="-1"/>
+    <xacro:m545_hind_rotator 					prefix="RH" reflect="-1"/>
+    <xacro:m545_hind_beam 				      	prefix="RH" reflect="-1"/>
+    <xacro:m545_hind_knuckle 					prefix="RH" reflect="-1"/>
+    <xacro:m545_hind_wheel 					    prefix="RH" reflect="-1"/>
+    <xacro:m545_hind_outrigger 				    prefix="RH" reflect="-1"/>
+
+    <!-- Add upper machine -->
+    <xacro:arg name="using_reduced_model" default="false"/>
+    <xacro:arg name="using_upper_machine_plugin" default="false"/>
+    <xacro:arg name="endeffector_type" default="0"/>
+    <xacro:arg name="upper_machine_plugin_file" default=""/>
+    <xacro:arg name="gripper_plugin_file" default=""/>
+    <xacro:arg name="using_mega_ft" default="false"/>
+    <xacro:arg name="ft_sensor_plugin_file" default=""/>
+
+    <xacro:unless value="$(arg using_reduced_model)">
+        <xacro:m545_cabin/>
+        <xacro:m545_boom/>
+        <xacro:m545_dipper/>
+        <xacro:m545_tele/>
+        <xacro:m545_roto_base/>
+        <xacro:m545_roto/>
+        <xacro:m545_endeffector endeffector_type="$(arg endeffector_type)"/>
+
+        <xacro:if value="$(arg using_upper_machine_plugin)">
+            <gazebo>
+                <plugin name="Plugin_Upper_Machine_M545" filename="$(arg upper_machine_plugin_file)"/>
+            </gazebo>
+        </xacro:if>
+    </xacro:unless>
+    <xacro:if value="$(arg using_reduced_model)">
+        <xacro:m545_um_attachment/>
+        <xacro:m545_um_mass/>
+    </xacro:if>
+
+    <xacro:ellipseA_SBG name="IMU" parent="BASE" ns="/" frame_id="/imu_link" topic_name="/m545_imu">
+        <origin xyz="0.0 0.0 0.0" rpy="-1.570796327 1.570796327 0.0" /> <!-- static r-p-y convention. dont mind arrows on the sensors, it is internally rotated by 180deg around x -->
+        <!-- 0 0 -0.12 -->
+    </xacro:ellipseA_SBG>
+    <xacro:arg name="using_cabin_imu"      default="false"/>
+    <xacro:if value="$(arg using_cabin_imu)">
+        <xacro:ellipseA_SBG name="IMU_CABIN" parent="CABIN" ns="/" frame_id="/IMU_CABIN_link" topic_name="/m545_imu_cabin">
+            <origin xyz="0.32963 0.30007 0.035" rpy="3.14159265359 0.0 -0.637045" /> <!-- from CAD -->
+        </xacro:ellipseA_SBG>
+    </xacro:if>
+
+    <!-- set true if boom lidar is needed, might be changed to livox -->
+    <xacro:arg name="using_boom_lidar"      default="false"/>
+    <xacro:if value="$(arg using_boom_lidar)">
+        <xacro:bpearl_macro name="rslidar_boom" parent="TELE" topic="/rslidar_boom/point_cloud" samples="500" min_angle="-2.87979" max_angle="2.87979">
+            <origin xyz="1.57 -0.245 -0.07" rpy="0.0 2.87979 0.0" />
+        </xacro:bpearl_macro>
+    </xacro:if>
+
+    <xacro:arg name="machine_id"      default="0"/>
+
+    <!-- Set true to use GNSS Sensors-->
+    <xacro:arg name="using_gps"      default="false"/>
+    <xacro:if value="$(arg using_gps)">
+        <xacro:if value="${$(arg machine_id)==0}"> <!-- HEAP -->
+            <xacro:property name="gnss_left_position" value="-.909 .67 2.079"/>
+            <xacro:property name="gnss_right_position" value="-.909 -.5 2.079"/>
+        </xacro:if>
+        <xacro:if value="${$(arg machine_id)==1}"> <!-- Armano -->
+            <xacro:property name="gnss_left_position" value="-.872 .898 2.164"/>
+            <xacro:property name="gnss_right_position" value="-.882 -.388 2.1574"/>
+        </xacro:if>            
+        <xacro:leica_GNSS name="GNSS_L" parent="CABIN" ns="/" frame_id="/gnss_l_link" topic_name="/m545_gnss_left">
+            <origin xyz="${gnss_left_position}"/>
+        </xacro:leica_GNSS>
+        <xacro:leica_GNSS name="GNSS_R" parent="CABIN" ns="/" frame_id="/gnss_r_link" topic_name="/m545_gnss_right">
+            <origin xyz="${gnss_right_position}"/>
+        </xacro:leica_GNSS>
+    </xacro:if>
+
+    <!-- Set true if chassis is fixed to the world -->
+    <xacro:arg name="fixed"      default="false"/>
+    <xacro:if value="$(arg fixed)">
+        <gazebo>
+            <model name="fix_m545">
+                <joint name="worldToBase" type="fixed">
+                    <parent>world</parent>
+                    <child>m545::BASE</child>
+                </joint>
+            </model>
+        </gazebo>
+    </xacro:if>
+
+</robot>

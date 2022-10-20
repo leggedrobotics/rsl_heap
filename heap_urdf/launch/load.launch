@@ -1,0 +1,46 @@
+<launch>
+
+  <!-- Configurations (can also be set as argument) -->
+  <arg name="excavator_name"             default="m545"/> <!-- Name of the excavator setup -->
+  <arg name="plugin_file"                default="libm545_gazebo_plugin.so"/> <!-- The name of the plugin library file -->
+  <arg name="simulation"                 default="true"/> <!-- Set true for simulation in Gazebo -->
+  <arg name="perfect_sensors"            default="true"/> <!-- Set true to simulate sensors without noise and bias -->
+  <arg name="fixed"                      default="false"/> <!-- Set true to fix the base of the excavator in simulation -->
+  <arg name="machine_id"                 default="0"/> <!-- 0: HEAP, 1: Armasuisse -->
+  <arg name="description_name"           default="mm_description"/> <!-- Give the robot description parameter a name -->
+  <arg name="using_cabin_lidar"          default="false"/> <!-- set true if cabin lidar is needed -->
+  <arg name="using_cabin_os0"            default="true"/> <!-- set true if cabin ouster os0 is needed -->
+  <arg name="using_boom_lidar"           default="false"/> <!-- set true if boom lidar is needed -->
+  <arg name="using_gps"                  default="true"/> <!-- set true to use gps sensors-->
+  <arg name="using_cabin_imu"            default="false"/> <!-- set true to use cabin imu sensors-->
+  <arg name="using_reduced_model"        default="false"/> <!-- set true to use reduced model (without boom) -->
+  <arg name="using_upper_machine_plugin" default="false"/> <!-- set true to use extra plugin for upper machine -->
+  <arg name="upper_machine_plugin_file"  default=""/>
+  <arg name="endeffector_type"           default="0"/> <!-- Endeffector type: 0 Shovel, 1 Gripper -->
+  <arg name="gripper_plugin_file"        default=""/>
+  <arg name="using_mega_ft"              default="false"/> <!-- using_mega_ft: true: using, false: not using -->
+  <arg name="ft_sensor_plugin_file"      default="librokubimini_cosmo_gazebo_plugin.so"/>
+  <arg name="fix_ft_sensor"              default="1"/> <!-- fix ft sensor joint: 0 false, 1 true -->
+
+  <!-- Run xacro script to generate description -->
+  <param name="$(arg description_name)" command="/usr/bin/env python3 $(find xacro)/xacro
+    '$(find heap_urdf)/urdf/$(arg excavator_name).urdf.xacro'
+    plugin_file:=$(arg plugin_file)
+    simulation:=$(arg simulation)
+    perfect_sensors:=$(arg perfect_sensors)
+    fixed:=$(arg fixed)
+    machine_id:=$(arg machine_id)
+    using_cabin_lidar:=$(arg using_cabin_lidar)
+    using_cabin_os0:=$(arg using_cabin_os0)
+    using_boom_lidar:=$(arg using_boom_lidar)
+    using_gps:=$(arg using_gps)
+    using_cabin_imu:=$(arg using_cabin_imu)
+    using_reduced_model:=$(arg using_reduced_model)
+    using_upper_machine_plugin:=$(arg using_upper_machine_plugin)
+    endeffector_type:=$(arg endeffector_type)
+    gripper_plugin_file:=$(arg gripper_plugin_file)
+    upper_machine_plugin_file:=$(arg upper_machine_plugin_file)
+    using_mega_ft:=$(arg using_mega_ft)
+    ft_sensor_plugin_file:=$(arg ft_sensor_plugin_file)
+    fix_sensor:=$(arg fix_ft_sensor)"/>
+</launch>

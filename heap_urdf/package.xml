@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package format="2">
+
+  <name>heap_urdf</name>
+  <version>0.0.0</version>
+  <description> Contains the simplified URDF model of the m545 excavators. </description>
+  <maintainer email="nubertj@ethz.ch">Julian Nubert</maintainer>
+  <license>Proprietary</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>std_utils</depend>
+  <depend>xacro</depend>
+  <depend>asop_urdf</depend>
+
+</package>

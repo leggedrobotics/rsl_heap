@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+	<!-- position covariance -->
+	<xacro:property name="x_y_cov" value="0.002"/>
+        <xacro:property name="z_cov" value="0.005"/>
+	<!-- set true if in simulation -->
+	<xacro:arg name="simulation"      default="true"/>
+	<!-- set true if Velodyne is perfect -->
+	<xacro:arg name="perfect_sensors" default="true"/>
+
+	<!-- GPS description -->
+	<xacro:macro name="leica_GNSS_model" params="name parent *origin">
+		<link name="${name}">
+			<visual>
+				<origin xyz="0 0 0" rpy="0 0 0"/>
+				<geometry>
+					<cylinder radius="0.001" length="0.1"/>
+				</geometry>
+				<material name="red">
+					<color rgba="1.0 0.0 0.0 1.0"/>
+				</material>
+		    	</visual>
+			<collision>
+				<origin xyz="0 0 0" rpy="0 0 0"/>
+				<geometry>
+					<cylinder radius="0.001" length="0.1"/>
+				</geometry>
+			</collision>
+			<inertial>
+				<mass value="0.001"/>
+				<origin xyz="0 0 0"/>
+				<inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+			</inertial>
+		</link>
+		<joint name="${name}_joint" type="fixed">
+			<parent link="${parent}"/>
+			<child link="${name}"/>
+			<xacro:insert_block name="origin"/>
+		</joint>
+		<gazebo reference="${name}_joint">
+  			<disableFixedJointLumping>true</disableFixedJointLumping>
+		</gazebo>
+	</xacro:macro>
+
+	<!-- GPS Gazebo -->
+	<xacro:macro name="leica_GNSS" params="name parent ns frame_id topic_name *origin">
+		<xacro:leica_GNSS_model name="${name}" parent="${parent}">
+			<xacro:insert_block name="origin"/>
+		</xacro:leica_GNSS_model>
+
+		<xacro:if value="$(arg simulation)">
+			<gazebo reference="${name}_link">
+				<material>Gazebo/Red</material>
+		    </gazebo>
+		    <gazebo reference="${name}_joint"/>
+		    <gazebo>
+				<plugin name="${name}_plugin" filename="libhector_gazebo_ros_gps.so">
+					<robotNamespace>${ns}</robotNamespace>
+					<bodyName>${name}</bodyName>
+					<frameId>${frame_id}</frameId>
+					<topicName>${topic_name}</topicName>
+					<referenceLatitude>47.4084860363</referenceLatitude>
+					<referenceLongitude>8.50435818058</referenceLongitude>
+					<referenceHeading>0</referenceHeading>
+					<referenceAltitude>565.0</referenceAltitude>
+					<updateRate>20</updateRate>
+
+					<xacro:if value="$(arg perfect_sensors)">
+						<offset>0 0 0</offset>
+						<drift>0 0 0</drift>
+						<driftFrequency>0 0 0</driftFrequency>
+						<gaussianNoise>0 0 0</gaussianNoise>
+						<velocityOffset>0 0 0</velocityOffset>
+						<velocityDrift>0 0 0</velocityDrift>
+						<velocityDriftFrequency>0 0 0</velocityDriftFrequency>
+						<velocityGaussianNoise>0 0 0</velocityGaussianNoise>
+					</xacro:if>
+					<xacro:unless value="$(arg perfect_sensors)">
+						<offset>0 0 0</offset>
+						<drift>0 0 0</drift>
+						<driftFrequency>0 0 0</driftFrequency>
+						<gaussianNoise>${x_y_cov} ${x_y_cov} ${z_cov}</gaussianNoise>
+						<velocityOffset>0 0 0</velocityOffset>
+						<velocityDrift>0 0 0</velocityDrift>
+						<velocityDriftFrequency>0 0 0</velocityDriftFrequency>
+						<velocityGaussianNoise>0 0 0</velocityGaussianNoise>
+					</xacro:unless>
+				</plugin>
+			</gazebo>
+		</xacro:if>
+	</xacro:macro>
+
+</robot>

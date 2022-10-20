@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<!--
+  This file defines xacro macros and properties for interfacing with gazebo/rviz.
+-->
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!-- Gazebo link tag adds contact friction (including friction coefficients) and damping to the link.  -->
+<xacro:macro name="gazebo_link" params="link_name kp:=0 kd:=0 mu1:=0 mu2:={mu1} ">
+  <gazebo reference="${link_name}">
+    <kp>${kp}</kp>
+    <kd>${kd}</kd>
+    <mu1>${mu1}</mu1>
+    <mu2>${mu2}</mu2>
+  </gazebo>
+</xacro:macro>
+
+<!-- Gazebo joint tag adds friction and damping to the joint.  -->
+<xacro:macro name="gazebo_joint" params="joint_name high_damping:=0">
+  <gazebo reference="${joint_name}">
+    <xacro:if value="${high_damping}">
+      <implicitSpringDamper>1</implicitSpringDamper>
+    </xacro:if>
+  </gazebo>
+</xacro:macro>
+
+<xacro:macro name="closed_loop_gazebo_joint" params=" name type parent child origin axis reflect:=1
+                                                      limit_lower limit_upper limit_velocity limit_effort">
+  <gazebo>
+    <joint name="${name}" type="${type}">
+      <parent>${parent}</parent>
+      <child>${child}</child>
+      <pose>${origin} 0 0 0</pose>
+      <axis>
+        <xyz>${axis}</xyz>
+        <limit>
+          <lower>${limit_lower}</lower>
+          <upper>${limit_upper}</upper>
+          <velocity>${limit_velocity}</velocity>
+          <effort>${limit_effort}</effort>
+        </limit>
+      </axis>
+    </joint>
+  </gazebo>
+</xacro:macro>
+
+
+
+</robot>

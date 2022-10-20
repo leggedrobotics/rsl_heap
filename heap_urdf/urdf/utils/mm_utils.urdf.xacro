@@ -1,0 +1,104 @@
+<?xml version="1.0" ?>
+
+<!--
+  This file defines xacro macros and properties for MM excavators.
+-->
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:property name="mm_gazebo" value="1"/>
+<xacro:property name="using_mega_ft" value="$(arg using_mega_ft)"/>
+
+<!-- Menzi Muck Link and Joint Properties -->
+<xacro:property name="mm_zero3" value="0 0 0"/>
+<!-- Contact Model -->
+<xacro:property name="mm_contact_kp" value="50000000.0"/>
+<xacro:property name="mm_contact_kd" value="2000000.0"/>
+<xacro:property name="mm_contact_mu" value="0.8"/>
+<!-- Friction Model Joints -->
+<xacro:property name="mm_joint_friction" value="0.0"/>
+<xacro:property name="mm_joint_damping" value="0.0"/>
+
+<!-- Link tag with a collision, inertial block -->
+<xacro:macro name="mm_link" params="  name v_origin_xyz:=${mm_zero3} v_origin_rpy:=${mm_zero3}
+                                      mass:=0 ixx:=0 iyy:=0 izz:=0 ixy:=0 ixz:=0 iyz:=0
+                                      i_origin_xyz:={mm_zero3} i_origin_rpy:=${mm_zero3} has_inertia:=1
+                                      **collision">
+  <xacro:x_link name="${name}" >
+    <container>
+      <xacro:if value="${has_inertia}">
+        <xacro:x_inertial mass="${mass}"
+          ixx="${ixx}" iyy="${iyy}" izz="${izz}"
+          ixy="${ixy}" ixz="${ixz}" iyz="${iyz}"
+          origin_xyz="${i_origin_xyz}"
+          origin_rpy="${i_origin_rpy}"/>
+      </xacro:if>
+
+      <xacro:insert_block name="collision"/>
+    </container>
+  </xacro:x_link>
+
+  <xacro:if value="${mm_gazebo}">
+    <xacro:gazebo_link link_name="${name}" kp="${mm_contact_kp}" kd="${mm_contact_kd}"
+                       mu1="${mm_contact_mu}" mu2="${mm_contact_mu}"/>
+  </xacro:if>
+
+</xacro:macro>
+
+<!-- Joint tag deciding on limits by reflection -->
+<xacro:macro name="mm_joint" params="name type parent child origin axis reflect:=1 **settings">
+
+  <xacro:x_joint  name="${name}" type="${type}"
+                  parent="${parent}" child="${child}"
+                  origin="${origin}" axis="${axis}" >
+    <container>
+        <xacro:insert_block name="settings"/>
+        <dynamics damping="${mm_joint_damping}" friction="${mm_joint_friction}"/>
+    </container>
+  </xacro:x_joint>
+
+  <xacro:if value="${mm_gazebo}">
+    <xacro:gazebo_joint joint_name="${name}"/>
+  </xacro:if>
+
+</xacro:macro>
+
+<!-- Link tag with a collision and inertial block -->
+<xacro:macro name="mm_segment" params=" link_name v_origin_xyz:=${mm_zero3} v_origin_rpy:=${mm_zero3}
+                                        mass ixx iyy izz ixy:=0 ixz:=0 iyz:=0
+                                        i_origin_xyz:=${mm_zero3} i_origin_rpy:=${mm_zero3} **collisions
+                                        joint_name joint_type parent joint_origin joint_axis
+                                        reflect:=1 **joint_settings" >
+
+  <xacro:mm_link  name="${link_name}" v_origin_xyz="${v_origin_xyz}" v_origin_rpy="${v_origin_rpy}"
+                  mass="${mass}" ixx="${ixx}" iyy="${iyy}" izz="${izz}" ixy="${ixy}" ixz="${ixz}" iyz="${iyz}"
+                  i_origin_xyz="${i_origin_xyz}" i_origin_rpy="${i_origin_rpy}" >
+      <container>
+        <xacro:insert_block name="collisions"/>
+      </container>
+  </xacro:mm_link>
+  <xacro:mm_joint name="${joint_name}" type="${joint_type}"
+                  parent="${parent}" child="${link_name}"
+                  origin="${joint_origin}" axis="${joint_axis}"
+                  reflect="${reflect}" >
+    <container>
+      <xacro:insert_block name="joint_settings"/>
+    </container>
+    </xacro:mm_joint>
+</xacro:macro>
+
+<!-- Fixed Contact frame -->
+<xacro:macro name="contact_frame" params="link_name joint_name parent_name v_origin_xyz:=${mm_zero3} v_origin_rpy:=${mm_zero3}">
+
+  <link name="${link_name}" />
+
+  <joint name="${joint_name}" type="fixed">
+    <parent link="${parent_name}"/>
+    <child link="${link_name}"/>
+    <origin xyz="${v_origin_xyz}"
+            rpy="${v_origin_rpy}"/>
+  </joint>
+
+</xacro:macro>
+
+</robot>

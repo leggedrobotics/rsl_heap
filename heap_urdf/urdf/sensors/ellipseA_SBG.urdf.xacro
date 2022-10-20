@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+
+<!--Copyright (C) 2014 by Jerome Maye                                        -->
+<!--jerome.maye@gmail.com                                                    -->
+<!--                                                                         -->
+<!--This program is free software; you can redistribute it and/or modify     -->
+<!--it under the terms of the Lesser GNU General Public License as published -->
+<!--by the Free Software Foundation; either version 3 of the License, or     -->
+<!--(at your option) any later version.                                      -->
+<!--                                                                         -->
+<!--This program is distributed in the hope that it will be useful,          -->
+<!--but WITHOUT ANY WARRANTY; without even the implied warranty of           -->
+<!--MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the             -->
+<!--Lesser GNU General Public License for more details.                      -->
+<!--                                                                         -->
+<!--You should have received a copy of the Lesser GNU General Public License -->
+<!--along with this program. If not, see <http://www.gnu.org/licenses/>.     -->
+
+<!-- This file contains the description of an SBG Imu+. -->
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Parameters -->
+
+    <!-- length [m] -->
+    <xacro:property name="l_imu" value="0.046"/>
+    <!-- width [m] -->
+    <xacro:property name="w_imu" value="0.045"/>
+    <!-- height [m] -->
+    <xacro:property name="h_imu" value="0.024"/>
+    <!-- mass [kg] -->
+    <xacro:property name="m_imu" value="0.0045"/>
+    <!-- friction coefficient -->
+    <xacro:property name="mu_imu" value="0.8"/>
+    <!-- set true if in simulation -->
+    <xacro:arg name="simulation"      default="true"/>
+    <!-- set true if IMU is perfect -->
+    <xacro:arg name="perfect_sensors" default="true"/>
+
+    <!-- IMU description -->
+    <xacro:macro name="ellipseA_SBG_model" params="name parent *origin">
+        <link name="${name}_link">
+        </link>
+
+        <link name="${name}_base_link">
+            <visual>
+                <origin xyz="0 0 -${h_imu * 0.5}" rpy="0 0 0"/>
+                <geometry>
+                    <box size="${l_imu} ${w_imu} ${h_imu}"/>
+                </geometry>
+                <material name="red">
+                    <color rgba="1.0 0.0 0.0 1.0"/>
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="0 0 -${h_imu * 0.5}" rpy="0 0 0"/>
+                <geometry>
+                    <box size="${l_imu} ${w_imu} ${h_imu}"/>
+                </geometry>
+            </collision>
+            <!--<xacro:inertial_cuboid m="${m_imu}" w="${l_imu}" h="${h_imu}"
+          d="${w_imu}"/>-->
+        </link>
+
+        <joint name="${name}_base_joint" type="fixed">
+            <parent link="${parent}"/>
+            <child link="${name}_base_link"/>
+            <xacro:insert_block name="origin"/>
+        </joint>
+
+        <joint name="${name}_joint" type="fixed">
+            <parent link="${name}_base_link"/>
+            <child link="${name}_link"/>
+            <origin xyz="-0.0107 -0.00505 -0.00705" rpy="0 0 0" />
+        </joint>
+
+    </xacro:macro>
+
+    <!-- IMU Gazebo -->
+    <xacro:macro name="ellipseA_SBG" params="name parent ns frame_id topic_name *origin">
+        <xacro:ellipseA_SBG_model name="${name}" parent="${parent}">
+            <xacro:insert_block name="origin"/>
+        </xacro:ellipseA_SBG_model>
+
+        <xacro:if value="$(arg simulation)">
+            <gazebo reference="${name}_link">
+                <material>Gazebo/Red</material>
+                <mu1>${mu_imu}</mu1>
+                <mu2>${mu_imu}</mu2>
+            </gazebo>
+            <gazebo reference="${name}_joint"/>
+            <gazebo>
+                    <plugin name="${name}_plugin" filename="libany_hector_gazebo_ros_imu.so">
+                    <robotNamespace>${ns}</robotNamespace>
+                    <bodyName>${name}_link</bodyName>
+                    <frameId>${frame_id}</frameId>
+                    <topicName>${topic_name}</topicName>
+                    <biasTopicName>${topic_name}/bias</biasTopicName>
+                    <serviceName>${topic_name}/calibrate</serviceName>
+                    <updateRate>100</updateRate>
+
+                    <xacro:if value="$(arg perfect_sensors)">
+                        <accelOffset>0 0 0</accelOffset>
+                        <accelDrift>0 0 0</accelDrift>
+                        <accelDriftFrequency>0 0 0</accelDriftFrequency>
+                        <accelGaussianNoise>0 0 0</accelGaussianNoise>
+                        <accelScaleError>1 1 1</accelScaleError>
+                        <rateOffset>0 0 0</rateOffset>
+                        <rateDrift>0 0 0</rateDrift>
+                        <rateDriftFrequency>0 0 0</rateDriftFrequency>
+                        <rateGaussianNoise>0 0 0</rateGaussianNoise>
+                        <rateScaleError>1 1 1</rateScaleError>
+                        <yawOffset>0</yawOffset>
+                        <yawDrift>0</yawDrift>
+                        <yawDriftFrequency>0</yawDriftFrequency>
+                        <yawGaussianNoise>0</yawGaussianNoise>
+                        <yawScaleError>1</yawScaleError>
+                    </xacro:if>
+                    <xacro:unless value="$(arg perfect_sensors)">
+                        <accelOffset>0 0 0</accelOffset>
+                        <accelDrift>0.1 0.1 0.1</accelDrift>
+                        <accelDriftFrequency>0 0 0</accelDriftFrequency>
+                        <accelGaussianNoise>0.07 0.07 0.14</accelGaussianNoise>
+                        <accelScaleError>1 1 1</accelScaleError>
+                        <rateOffset>0 0 0</rateOffset>
+                        <rateDrift>0.01 0.01 0.01</rateDrift>
+                        <rateDriftFrequency>0 0 0</rateDriftFrequency>
+                        <rateGaussianNoise>0.0008 0.0008 0.0008</rateGaussianNoise>
+                        <rateScaleError>1 1 1</rateScaleError>
+                        <yawOffset>0</yawOffset>
+                        <yawDrift>0.1</yawDrift>
+                        <yawDriftFrequency>0</yawDriftFrequency>
+                        <yawGaussianNoise>0.05</yawGaussianNoise>
+                        <yawScaleError>1</yawScaleError>
+                    </xacro:unless>
+
+                </plugin>
+            </gazebo>
+        </xacro:if>
+    </xacro:macro>
+
+</robot>

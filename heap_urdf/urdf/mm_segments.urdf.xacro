@@ -1,0 +1,1030 @@
+<?xml version="1.0" ?>
+
+<!--
+  This file defines mm segment macros for building up MM excavators.
+-->
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:macro name="m545_chassis" params="">
+
+  <xacro:mm_link name="${M545_Base_name}"
+                 v_origin_xyz="${M545_Base_v_xyz}"
+                 v_origin_rpy="${M545_Base_v_rpy}"
+                 has_inertia = "0">
+   <container>
+       <xacro:x_box_collision size="${M545_Base_c_box}"
+                              origin_xyz="${M545_Base_c_xyz}"
+                              origin_rpy="${M545_Base_c_rpy}" />
+   </container>
+
+  </xacro:mm_link>
+
+    <!-- Dummy inertia link, because KDL cannot have inertia on the base link -->
+    <link name="${M545_Base_name}_inertia">
+      <inertial>
+        <origin xyz="${M545_Base_cog}" rpy="0 0 0"/>
+        <mass value="${M545_Base_mass}"/>
+        <inertia ixx="${M545_Base_ixx}" ixy="${M545_Base_ixy}"
+		 ixz="${M545_Base_ixz}" iyy="${M545_Base_iyy}"
+		 iyz="${M545_Base_iyz}" izz="${M545_Base_izz}"/>
+      </inertial>
+    </link>
+
+    <!-- Fixed joint to add dummy inertia link -->
+    <joint name="${M545_Base_name}_to_${M545_Base_name}_inertia" type="fixed">
+      <parent link="${M545_Base_name}"/>
+      <child link="${M545_Base_name}_inertia"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+</xacro:macro>
+
+<xacro:macro name="m545_front_swivel_foot" params="reflect prefix">
+
+    <xacro:mm_segment   link_name="${prefix}_${M545_FSF_name}"
+                        v_origin_xyz="${M545_FSF_v_xyz}"
+                        v_origin_rpy="${M545_FSF_v_rpy}"
+                        mass="${M545_FSF_mass}"
+                        ixx="${M545_FSF_ixx}"
+                        iyy="${M545_FSF_iyy}"
+                        izz="${M545_FSF_izz}"
+                        ixy="${M545_FSF_ixy}"
+                        ixz="${M545_FSF_ixz}"
+                        iyz="${M545_FSF_iyz}"
+                        i_origin_xyz="${M545_FSF_cog}"
+                        joint_name="J_${prefix}_${M545_Base_j1_name}"
+                        joint_type="${M545_Base_j1_type}"
+                        parent="${M545_Base_name}"
+                        joint_origin="${M545_Base_j1_xyz}"
+                        joint_axis="${M545_Base_j1_axis}"
+                        reflect="${reflect}">
+        <container>
+            <xacro:x_box_collision  size="${M545_FSF_c_box}"
+                                    origin_xyz="${M545_FSF_c_xyz}"
+                                    origin_rpy="${M545_FSF_c_rpy}"/>
+        </container>
+        <container>
+          <xacro:M545_Base_j1_limits/>
+        </container>
+
+    </xacro:mm_segment>
+
+</xacro:macro>
+
+<xacro:macro name="m545_front_beam" params="reflect prefix">
+
+    <xacro:mm_segment   link_name="${prefix}_${M545_FBE_name}"
+                        v_origin_xyz="${M545_FBE_v_xyz}"
+                        v_origin_rpy="${M545_FBE_v_rpy}"
+                        mass="${M545_FBE_mass}"
+                        ixx="${M545_FBE_ixx}"
+                        iyy="${M545_FBE_iyy}"
+                        izz="${M545_FBE_izz}"
+                        ixy="${M545_FBE_ixy}"
+                        ixz="${M545_FBE_ixz}"
+                        iyz="${M545_FBE_iyz}"
+                        i_origin_xyz="${M545_FBE_cog}"
+                        joint_name="J_${prefix}_${M545_FSF_j1_name}"
+                        joint_type="${M545_FSF_j1_type}"
+                        parent="${prefix}_${M545_FSF_name}"
+                        joint_origin="${M545_FSF_j1_xyz}"
+                        joint_axis="${M545_FSF_j1_axis}"
+                        reflect="${reflect}">
+        <container>
+            <xacro:x_box_collision  size="${M545_FBE_c_box}"
+                                    origin_xyz="${M545_FBE_c_xyz}"
+                                    origin_rpy="${M545_FBE_c_rpy}"/>
+        </container>
+        <container>
+          <xacro:M545_FSF_j1_limits/>
+        </container>
+    </xacro:mm_segment>
+
+</xacro:macro>
+
+<xacro:macro name="m545_front_parallel_guide" params="reflect prefix">
+
+    <xacro:mm_segment   link_name="${prefix}_${M545_FPG_name}"
+                        v_origin_xyz="${M545_FPG_v_xyz}"
+                        v_origin_rpy="${M545_FPG_v_rpy}"
+                        mass="${M545_FPG_mass}"
+                        ixx="${M545_FPG_ixx}"
+                        iyy="${M545_FPG_iyy}"
+                        izz="${M545_FPG_izz}"
+                        ixy="${M545_FPG_ixy}"
+                        ixz="${M545_FPG_ixz}"
+                        iyz="${M545_FPG_iyz}"
+                        i_origin_xyz="${M545_FPG_cog}"
+                        joint_name="J_${prefix}_${M545_FSF_j2_name}"
+                        joint_type="${M545_FSF_j2_type}"
+                        parent="${prefix}_${M545_FSF_name}"
+                        joint_origin="${M545_FSF_j2_xyz}"
+                        joint_axis="${M545_FSF_j2_axis}"
+                        reflect="${reflect}">
+        <container>
+            <xacro:x_box_collision  size="${M545_FPG_c_box}"
+                                    origin_xyz="${M545_FPG_c_xyz}"
+                                    origin_rpy="${M545_FPG_c_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_FSF_j2_limits/>
+        	<mimic joint="J_${prefix}_${M545_FSF_j1_name}" multiplier="1" offset="0"/>
+        </container>
+
+    </xacro:mm_segment>
+
+</xacro:macro>
+
+<xacro:macro name="m545_front_bearing_block" params="reflect prefix">
+
+    <xacro:mm_segment   link_name="${prefix}_${M545_FBB_name}"
+                        v_origin_xyz="${M545_FBB_v_xyz}"
+                        v_origin_rpy="${M545_FBB_v_rpy}"
+                        mass="${M545_FBB_mass}"
+                        ixx="${M545_FBB_ixx}"
+                        iyy="${M545_FBB_iyy}"
+                        izz="${M545_FBB_izz}"
+                        ixy="${M545_FBB_ixy}"
+                        ixz="${M545_FBB_ixz}"
+                        iyz="${M545_FBB_iyz}"
+                        i_origin_xyz="${M545_FBB_cog}"
+                        joint_name="J_${prefix}_${M545_FBE_j1_name}"
+                        joint_type="${M545_FBE_j1_type}"
+                        parent="${prefix}_${M545_FBE_name}"
+                        joint_origin="${M545_FBE_j1_xyz}"
+                        joint_axis="${M545_FBE_j1_axis}"
+                        reflect="${reflect}">
+        <container>
+            <xacro:x_box_collision  size="${M545_FBB_c1_box}"
+                                    origin_xyz="${M545_FBB_c1_xyz}"
+                                    origin_rpy="${M545_FBB_c1_rpy}"/>
+            <xacro:x_box_collision  size="${M545_FBB_c2_box}"
+                                    origin_xyz="${M545_FBB_c2_xyz}"
+                                    origin_rpy="${M545_FBB_c2_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_FBE_j1_limits/>
+    			<mimic joint="J_${prefix}_${M545_FSF_j1_name}" multiplier="-1" offset="0"/>
+        </container>
+
+    </xacro:mm_segment>
+
+</xacro:macro>
+
+<xacro:macro name="m545_front_gazebo_parallel_joint" params="reflect prefix">
+  <xacro:if value="${mm_gazebo}">
+    <xacro:closed_loop_gazebo_joint     name="J_${prefix}_${M545_FPG_j1_name}"
+                                        type="${M545_FPG_j1_type}"
+                                        parent="${prefix}_${M545_FPG_name}"
+                                        child="${prefix}_${M545_FBB_name}"
+                                        origin="${M545_FPG_j1_xyz}"
+                                        axis="${M545_FPG_j1_axis}"
+                                        reflect="${reflect}"
+                                        limit_lower="${M545_FPG_j1_limit_lower}"
+                                        limit_upper="${M545_FPG_j1_limit_upper}"
+                                        limit_velocity="${M545_FPG_j1_limit_velocity}"
+                                        limit_effort="${M545_FPG_j1_limit_effort}">
+    </xacro:closed_loop_gazebo_joint>
+  </xacro:if>
+</xacro:macro>
+
+<xacro:macro name="m545_front_knuckle" params="reflect prefix">
+
+    <xacro:mm_segment   link_name="${prefix}_${M545_FKN_name}"
+                        v_origin_xyz="${M545_FKN_v_xyz}"
+                        v_origin_rpy="${M545_FKN_v_rpy}"
+                        mass="${M545_FKN_mass}"
+                        ixx="${M545_FKN_ixx}"
+                        iyy="${M545_FKN_iyy}"
+                        izz="${M545_FKN_izz}"
+                        ixy="${M545_FKN_ixy}"
+                        ixz="${M545_FKN_ixz}"
+                        iyz="${M545_FKN_iyz}"
+                        i_origin_xyz="${M545_FKN_cog}"
+                        joint_name="J_${prefix}_${M545_FBB_j1_name}"
+                        joint_type="${M545_FBB_j1_type}"
+                        parent="${prefix}_${M545_FBB_name}"
+                        joint_origin="${M545_FBB_j1_xyz}"
+                        joint_axis="${M545_FBB_j1_axis}"
+                        reflect="${reflect}">
+        <container>
+            <xacro:x_box_collision  size="${M545_FKN_c1_box}"
+                                    origin_xyz="${M545_FKN_c1_xyz}"
+                                    origin_rpy="${M545_FKN_c1_rpy}"/>
+            <xacro:x_box_collision  size="${M545_FKN_c2_box}"
+                                    origin_xyz="${M545_FKN_c2_xyz}"
+                                    origin_rpy="${M545_FKN_c2_rpy}"/>
+            <xacro:x_cylinder_collision   length="${M545_FKN_c3_length}"
+                                          radius="${M545_FKN_c3_radius}"
+                                          origin_xyz="${M545_FKN_c3_xyz}"
+                                          origin_rpy="${M545_FKN_c3_rpy}"/>
+        </container>
+        <container>
+          <xacro:M545_FBB_j1_limits/>
+        </container>
+
+    </xacro:mm_segment>
+
+</xacro:macro>
+
+<xacro:macro name="m545_front_wheel" params="reflect prefix">
+
+    <xacro:mm_segment   link_name="${prefix}_${M545_FWH_name}"
+                        v_origin_xyz="${M545_FWH_v_xyz}"
+                        v_origin_rpy="${M545_FWH_v_rpy}"
+                        mass="${M545_FWH_mass}"
+                        ixx="${M545_FWH_ixx}"
+                        iyy="${M545_FWH_iyy}"
+                        izz="${M545_FWH_izz}"
+                        ixy="${M545_FWH_ixy}"
+                        ixz="${M545_FWH_ixz}"
+                        iyz="${M545_FWH_iyz}"
+                        i_origin_xyz="${M545_FWH_cog}"
+                        joint_name="J_${prefix}_${M545_FKN_j1_name}"
+                        joint_type="${M545_FKN_j1_type}"
+                        parent="${prefix}_${M545_FKN_name}"
+                        joint_origin="${M545_FKN_j1_xyz}"
+                        joint_axis="${M545_FKN_j1_axis}"
+                        reflect="${reflect}">
+        <container>
+            <xacro:x_cylinder_collision   radius="${M545_FWH_radius}"
+									                        length="${M545_FWH_length}"
+                                          origin_xyz="${M545_FWH_c_xyz}"
+                                          origin_rpy="${M545_FWH_c_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_FKN_j1_limits/>
+        </container>
+    </xacro:mm_segment>
+
+   <xacro:contact_frame    link_name="${prefix}_${M545_FWH_name}_CONTACT"
+                           joint_name="${prefix}_${M545_FWH_name}_TO_${prefix}_${M545_FWH_name}_CONTACT"
+                           parent_name="${prefix}_${M545_FWH_name}"
+                           v_origin_xyz="0 0 0"
+                           v_origin_rpy="0 0 0"/>
+
+</xacro:macro>
+
+<xacro:macro name="m545_hind_rotator" params="reflect prefix">
+
+    <xacro:mm_segment   link_name="${prefix}_${M545_HRO_name}"
+                        v_origin_xyz="${M545_HRO_v_xyz}"
+                        v_origin_rpy="${M545_HRO_v_rpy}"
+                        mass="${M545_HRO_mass}"
+                        ixx="${M545_HRO_ixx}"
+                        iyy="${M545_HRO_iyy}"
+                        izz="${M545_HRO_izz}"
+                        ixy="${M545_HRO_ixy}"
+                        ixz="${M545_HRO_ixz}"
+                        iyz="${M545_HRO_iyz}"
+                        i_origin_xyz="${M545_HRO_cog}"
+                        joint_name="J_${prefix}_${M545_Base_j2_name}"
+                        joint_type="${M545_Base_j2_type}"
+                        parent="${M545_Base_name}"
+                        joint_origin="${M545_Base_j2_xyz}"
+                        joint_axis="${M545_Base_j2_axis}"
+                        reflect="${reflect}">
+        <container>
+            <xacro:x_box_collision  size="${M545_HRO_c_box}"
+                                    origin_xyz="${M545_HRO_c_xyz}"
+                                    origin_rpy="${M545_HRO_c_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_Base_j2_limits/>
+        </container>
+
+    </xacro:mm_segment>
+
+</xacro:macro>
+
+<xacro:macro name="m545_hind_beam" params="reflect prefix">
+
+    <xacro:mm_segment   link_name="${prefix}_${M545_HBE_name}"
+                        v_origin_xyz="${M545_HBE_v_xyz}"
+                        v_origin_rpy="${M545_HBE_v_rpy}"
+                        mass="${M545_HBE_mass}"
+                        ixx="${M545_HBE_ixx}"
+                        iyy="${M545_HBE_iyy}"
+                        izz="${M545_HBE_izz}"
+                        ixy="${M545_HBE_ixy}"
+                        ixz="${M545_HBE_ixz}"
+                        iyz="${M545_HBE_iyz}"
+                        i_origin_xyz="${M545_HBE_cog}"
+                        joint_name="J_${prefix}_${M545_HRO_j1_name}"
+                        joint_type="${M545_HRO_j1_type}"
+                        parent="${prefix}_${M545_HRO_name}"
+                        joint_origin="${M545_HRO_j1_xyz}"
+                        joint_axis="${M545_HRO_j1_axis}"
+                        reflect="${reflect}">
+        <container>
+            <xacro:x_box_collision  size="${M545_HBE_c_box}"
+                                    origin_xyz="${M545_HBE_c_xyz}"
+                                    origin_rpy="${M545_HBE_c_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_HRO_j1_limits/>
+        </container>
+
+    </xacro:mm_segment>
+
+</xacro:macro>
+
+<xacro:macro name="m545_hind_knuckle" params="reflect prefix">
+
+    <xacro:mm_segment   link_name="${prefix}_${M545_HKN_name}"
+                        v_origin_xyz="${M545_HKN_v_xyz}"
+                        v_origin_rpy="${M545_HKN_v_rpy}"
+                        mass="${M545_HKN_mass}"
+                        ixx="${M545_HKN_ixx}"
+                        iyy="${M545_HKN_iyy}"
+                        izz="${M545_HKN_izz}"
+                        ixy="${M545_HKN_ixy}"
+                        ixz="${M545_HKN_ixz}"
+                        iyz="${M545_HKN_iyz}"
+                        i_origin_xyz="${M545_HKN_cog}"
+                        joint_name="J_${prefix}_${M545_HBE_j1_name}"
+                        joint_type="${M545_HBE_j1_type}"
+                        parent="${prefix}_${M545_HBE_name}"
+                        joint_origin="${M545_HBE_j1_xyz}"
+                        joint_axis="${M545_HBE_j1_axis}"
+                        reflect="${reflect}">
+        <container>
+            <xacro:x_box_collision  size="${M545_HKN_c_box}"
+                                    origin_xyz="${M545_HKN_c_xyz}"
+                                    origin_rpy="${M545_HKN_c_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_HBE_j1_limits/>
+        </container>
+
+    </xacro:mm_segment>
+
+</xacro:macro>
+
+<xacro:macro name="m545_hind_wheel" params="reflect prefix">
+
+    <xacro:mm_segment   link_name="${prefix}_${M545_HWH_name}"
+                        v_origin_xyz="${M545_HWH_v_xyz}"
+                        v_origin_rpy="${M545_HWH_v_rpy}"
+                        mass="${M545_HWH_mass}"
+                        ixx="${M545_HWH_ixx}"
+                        iyy="${M545_HWH_iyy}"
+                        izz="${M545_HWH_izz}"
+                        ixy="${M545_HWH_ixy}"
+                        ixz="${M545_HWH_ixz}"
+                        iyz="${M545_HWH_iyz}"
+                        i_origin_xyz="${M545_HWH_cog}"
+                        joint_name="J_${prefix}_${M545_HKN_j1_name}"
+                        joint_type="${M545_HKN_j1_type}"
+                        parent="${prefix}_${M545_HKN_name}"
+                        joint_origin="${M545_HKN_j1_xyz}"
+                        joint_axis="${M545_HKN_j1_axis}"
+                        reflect="${reflect}">
+        <container>
+            <xacro:x_cylinder_collision  	radius="${M545_HWH_radius}"
+									        length="${M545_HWH_length}"
+                                            origin_xyz="${M545_HWH_c_xyz}"
+                                            origin_rpy="${M545_HWH_c_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_HKN_j1_limits/>
+        </container>
+    </xacro:mm_segment>
+
+   <xacro:contact_frame    link_name="${prefix}_${M545_HWH_name}_CONTACT"
+                           joint_name="${prefix}_${M545_HWH_name}_TO_${prefix}_${M545_HWH_name}_CONTACT"
+                           parent_name="${prefix}_${M545_HWH_name}"
+                           v_origin_xyz="0 0 0"
+                           v_origin_rpy="0 0 0"/>
+</xacro:macro>
+
+<xacro:macro name="m545_hind_outrigger" params="reflect prefix">
+
+    <xacro:mm_segment   link_name="${prefix}_${M545_HOR_name}"
+                        v_origin_xyz="${M545_HOR_v_xyz}"
+                        v_origin_rpy="${M545_HOR_v_rpy}"
+                        mass="${M545_HOR_mass}"
+                        ixx="${M545_HOR_ixx}"
+                        iyy="${M545_HOR_iyy}"
+                        izz="${M545_HOR_izz}"
+                        ixy="${M545_HOR_ixy}"
+                        ixz="${M545_HOR_ixz}"
+                        iyz="${M545_HOR_iyz}"
+                        i_origin_xyz="${M545_HOR_cog}"
+                        joint_name="J_${prefix}_${M545_HKN_j2_name}"
+                        joint_type="${M545_HKN_j2_type}"
+                        parent="${prefix}_${M545_HKN_name}"
+                        joint_origin="${M545_HKN_j2_xyz}"
+                        joint_axis="${M545_HKN_j2_axis}"
+                        reflect="${reflect}">
+        <container>
+            <xacro:x_box_collision  size="${M545_HOR_c1_box}"
+                                    origin_xyz="${M545_HOR_c1_xyz}"
+                                    origin_rpy="${M545_HOR_c1_rpy}"/>
+
+            <xacro:x_box_collision  size="${M545_HOR_c2_box}"
+                                    origin_xyz="${M545_HOR_c2_xyz}"
+                                    origin_rpy="${M545_HOR_c2_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_HKN_j2_limits/>
+        </container>
+    </xacro:mm_segment>
+
+</xacro:macro>
+
+<xacro:macro name="m545_cabin" params="">
+
+    <xacro:mm_segment   link_name="${M545_Cabin_name}"
+                        v_origin_xyz="${M545_Cabin_v_xyz}"
+                        v_origin_rpy="${M545_Cabin_v_rpy}"
+                        mass="${M545_Cabin_mass}"
+                        ixx="${M545_Cabin_ixx}"
+                        iyy="${M545_Cabin_iyy}"
+                        izz="${M545_Cabin_izz}"
+                        ixy="${M545_Cabin_ixy}"
+                        ixz="${M545_Cabin_ixz}"
+                        iyz="${M545_Cabin_iyz}"
+                        i_origin_xyz="${M545_Cabin_cog}"
+                        joint_name="J_${M545_Base_j3_name}"
+                        joint_type="${M545_Base_j3_type}"
+                        parent="${M545_Base_name}"
+                        joint_origin="${M545_Base_j3_xyz}"
+                        joint_axis="${M545_Base_j3_axis}">
+        <container>
+            <xacro:x_box_collision  size="${M545_Cabin_c1_box}"
+                                    origin_xyz="${M545_Cabin_c1_xyz}"
+                                    origin_rpy="${M545_Cabin_c1_rpy}"/>
+
+            <xacro:x_box_collision  size="${M545_Cabin_c2_box}"
+                                    origin_xyz="${M545_Cabin_c2_xyz}"
+                                    origin_rpy="${M545_Cabin_c2_rpy}"/>
+
+            <xacro:x_cylinder_collision   radius="${M545_Cabin_c3_radius}"
+                                          length="${M545_Cabin_c3_length}"
+                                          origin_xyz="${M545_Cabin_c3_xyz}"
+                                          origin_rpy="${M545_Cabin_c3_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_Base_j3_limits/>
+        </container>
+
+	</xacro:mm_segment>
+
+</xacro:macro>
+
+<xacro:macro name="m545_boom" params="">
+
+    <xacro:mm_segment   link_name="${M545_Boom_name}"
+                        v_origin_xyz="${M545_Boom_v_xyz}"
+                        v_origin_rpy="${M545_Boom_v_rpy}"
+                        mass="${M545_Boom_mass}"
+                        ixx="${M545_Boom_ixx}"
+                        iyy="${M545_Boom_iyy}"
+                        izz="${M545_Boom_izz}"
+                        ixy="${M545_Boom_ixy}"
+                        ixz="${M545_Boom_ixz}"
+                        iyz="${M545_Boom_iyz}"
+                        i_origin_xyz="${M545_Boom_cog}"
+                        joint_name="J_${M545_Cabin_j1_name}"
+                        joint_type="${M545_Cabin_j1_type}"
+                        parent="${M545_Cabin_name}"
+                        joint_origin="${M545_Cabin_j1_xyz}"
+                        joint_axis="${M545_Cabin_j1_axis}">
+        <container>
+            <xacro:x_box_collision  size="${M545_Boom_c_box}"
+                                    origin_xyz="${M545_Boom_c_xyz}"
+                                    origin_rpy="${M545_Boom_c_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_Cabin_j1_limits/>
+        </container>
+	</xacro:mm_segment>
+
+</xacro:macro>
+
+
+<xacro:macro name="m545_dipper" params="">
+
+    <xacro:mm_segment   link_name="${M545_DIPPER_name}"
+                        v_origin_xyz="${M545_DIPPER_v_xyz}"
+                        v_origin_rpy="${M545_DIPPER_v_rpy}"
+                        mass="${M545_DIPPER_mass}"
+                        ixx="${M545_DIPPER_ixx}"
+                        iyy="${M545_DIPPER_iyy}"
+                        izz="${M545_DIPPER_izz}"
+                        ixy="${M545_DIPPER_ixy}"
+                        ixz="${M545_DIPPER_ixz}"
+                        iyz="${M545_DIPPER_iyz}"
+                        i_origin_xyz="${M545_DIPPER_cog}"
+                        joint_name="J_${M545_Boom_j1_name}"
+                        joint_type="${M545_Boom_j1_type}"
+                        parent="${M545_Boom_name}"
+                        joint_origin="${M545_Boom_j1_xyz}"
+                        joint_axis="${M545_Boom_j1_axis}">
+        <container>
+            <xacro:x_box_collision  size="${M545_DIPPER_c_box}"
+                                    origin_xyz="${M545_DIPPER_c_xyz}"
+                                    origin_rpy="${M545_DIPPER_c_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_Boom_j1_limits/>
+        </container>
+	</xacro:mm_segment>
+
+</xacro:macro>
+
+
+<xacro:macro name="m545_tele" params="">
+
+    <xacro:mm_segment   link_name="${M545_TELE_name}"
+                        v_origin_xyz="${M545_TELE_v_xyz}"
+                        v_origin_rpy="${M545_TELE_v_rpy}"
+                        mass="${M545_TELE_mass}"
+                        ixx="${M545_TELE_ixx}"
+                        iyy="${M545_TELE_iyy}"
+                        izz="${M545_TELE_izz}"
+                        ixy="${M545_TELE_ixy}"
+                        ixz="${M545_TELE_ixz}"
+                        iyz="${M545_TELE_iyz}"
+                        i_origin_xyz="${M545_TELE_cog}"
+                        joint_name="J_${M545_DIPPER_j1_name}"
+                        joint_type="${M545_DIPPER_j1_type}"
+                        parent="${M545_DIPPER_name}"
+                        joint_origin="${M545_DIPPER_j1_xyz}"
+                        joint_axis="${M545_DIPPER_j1_axis}">
+        <container>
+            <xacro:x_box_collision  size="${M545_TELE_c1_box}"
+                                    origin_xyz="${M545_TELE_c1_xyz}"
+                                    origin_rpy="${M545_TELE_c1_rpy}"/>
+            <xacro:x_box_collision  size="${M545_TELE_c2_box}"
+                                    origin_xyz="${M545_TELE_c2_xyz}"
+                                    origin_rpy="${M545_TELE_c2_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_DIPPER_j1_limits/>
+        </container>
+	</xacro:mm_segment>
+
+</xacro:macro>
+
+
+<xacro:macro name="m545_roto_base" params="">
+
+    <xacro:mm_segment   link_name="${M545_ROTO_BASE_name}"
+                        v_origin_xyz="${M545_ROTO_BASE_v_xyz}"
+                        v_origin_rpy="${M545_ROTO_BASE_v_rpy}"
+                        mass="${M545_ROTO_BASE_mass}"
+                        ixx="${M545_ROTO_BASE_ixx}"
+                        iyy="${M545_ROTO_BASE_iyy}"
+                        izz="${M545_ROTO_BASE_izz}"
+                        ixy="${M545_ROTO_BASE_ixy}"
+                        ixz="${M545_ROTO_BASE_ixz}"
+                        iyz="${M545_ROTO_BASE_iyz}"
+                        i_origin_xyz="${M545_ROTO_BASE_cog}"
+                        joint_name="J_${M545_TELE_j1_name}"
+                        joint_type="${M545_TELE_j1_type}"
+                        parent="${M545_TELE_name}"
+                        joint_origin="${M545_TELE_j1_xyz}"
+                        joint_axis="${M545_TELE_j1_axis}">
+        <container>
+            <xacro:x_box_collision  size="${M545_ROTO_BASE_c_box}"
+                                    origin_xyz="${M545_ROTO_BASE_c_xyz}"
+                                    origin_rpy="${M545_ROTO_BASE_c_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_TELE_j1_limits/>
+        </container>
+
+	</xacro:mm_segment>
+
+</xacro:macro>
+
+
+<xacro:macro name="m545_roto" params="">
+
+    <xacro:mm_segment   link_name="${M545_ROTO_name}"
+                        v_origin_xyz="${M545_ROTO_v_xyz}"
+                        v_origin_rpy="${M545_ROTO_v_rpy}"
+                        mass="${M545_ROTO_mass}"
+                        ixx="${M545_ROTO_ixx}"
+                        iyy="${M545_ROTO_iyy}"
+                        izz="${M545_ROTO_izz}"
+                        ixy="${M545_ROTO_ixy}"
+                        ixz="${M545_ROTO_ixz}"
+                        iyz="${M545_ROTO_iyz}"
+                        i_origin_xyz="${M545_ROTO_cog}"
+                        joint_name="J_${M545_ROTO_BASE_j1_name}"
+                        joint_type="${M545_ROTO_BASE_j1_type}"
+                        parent="${M545_ROTO_BASE_name}"
+                        joint_origin="${M545_ROTO_BASE_j1_xyz}"
+                        joint_axis="${M545_ROTO_BASE_j1_axis}">
+        <container>
+            <xacro:x_box_collision  size="${M545_ROTO_c_box}"
+                                    origin_xyz="${M545_ROTO_c_xyz}"
+                                    origin_rpy="${M545_ROTO_c_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_ROTO_BASE_j1_limits/>
+        </container>
+
+	</xacro:mm_segment>
+
+</xacro:macro>
+
+
+<xacro:macro name="m545_gripper_base" params="">
+
+    <link name="${M545_GRIPPER_BASE_name}">
+      <inertial>
+        <origin xyz="${M545_GRIPPER_BASE_cog}" rpy="0 0 0"/>
+        <mass value="${M545_GRIPPER_BASE_mass}"/>
+        <inertia ixx="${M545_GRIPPER_BASE_ixx}" ixy="${M545_GRIPPER_BASE_ixy}"
+		 ixz="${M545_GRIPPER_BASE_ixz}" iyy="${M545_GRIPPER_BASE_iyy}"
+		 iyz="${M545_GRIPPER_BASE_iyz}" izz="${M545_GRIPPER_BASE_izz}"/>
+      </inertial>
+      <collision>
+        <origin rpy="${M545_GRIPPER_BASE_c_rpy}" xyz="${M545_GRIPPER_BASE_c_xyz}"/>
+        <geometry>
+          <box size="${M545_GRIPPER_BASE_c_box}"/>
+        </geometry>
+      </collision>
+    </link>
+
+<!-- using_mega_ft == true if in use (false if not in use)-->
+<xacro:unless value="${using_mega_ft}">
+    <joint name="J_${M545_EE_j1_name}" type="${M545_EE_j1_type}">
+          <parent link="${M545_EE_name}"/>
+          <child link="${M545_GRIPPER_BASE_name}"/>
+          <origin xyz="${M545_EE_j1_xyz}"/>
+    </joint>
+</xacro:unless>
+<xacro:if value="${using_mega_ft}">
+    <!--include Mega F/T Sensor-->
+    <xacro:include filename="$(find rokubimini_custom_description)/urdf/ROKUBIMEGA.urdf.xacro"/>
+    <link name="${M545_FT_name}_MOUNT"/>
+    <joint name="J_${M545_FT_name}_MOUNT" type="${M545_FT_type}">
+            <parent link="${M545_FT_name}_MOUNT"/>
+            <child link="${M545_GRIPPER_BASE_name}"/>
+            <origin xyz="${M545_FT_MOUNT_xyz}"/>
+    </joint>
+</xacro:if>
+
+</xacro:macro>
+
+
+<xacro:macro name="m545_gripper_angle" params="">
+
+    <link name="${M545_GRIPPER_ANGLE_name}">
+      <inertial>
+        <origin xyz="${M545_GRIPPER_ANGLE_cog}" rpy="0 0 0"/>
+        <mass value="${M545_GRIPPER_ANGLE_mass}"/>
+        <inertia ixx="${M545_GRIPPER_ANGLE_ixx}" ixy="${M545_GRIPPER_ANGLE_ixy}"
+		 ixz="${M545_GRIPPER_ANGLE_ixz}" iyy="${M545_GRIPPER_ANGLE_iyy}"
+		 iyz="${M545_GRIPPER_ANGLE_iyz}" izz="${M545_GRIPPER_ANGLE_izz}"/>
+      </inertial>
+      <collision>
+        <origin rpy="${M545_GRIPPER_ANGLE_c_rpy}" xyz="${M545_GRIPPER_ANGLE_c_xyz}"/>
+        <geometry>
+          <box size="${M545_GRIPPER_ANGLE_c_box}"/>
+        </geometry>
+      </collision>
+    </link>
+
+
+    <joint name="J_${M545_GRIPPER_BASE_j1_name}" type="${M545_GRIPPER_BASE_j1_type}">
+      <parent link="${M545_GRIPPER_BASE_name}"/>
+      <child link="${M545_GRIPPER_ANGLE_name}"/>
+      <origin xyz="${M545_GRIPPER_BASE_j1_xyz}"/>
+    </joint>
+
+</xacro:macro>
+
+
+<xacro:macro name="m545_gripper_rotate" params="">
+
+    <link name="${M545_GRIPPER_ROTATE_name}">
+      <inertial>
+        <origin xyz="${M545_GRIPPER_ROTATE_cog}" rpy="0 0 0"/>
+        <mass value="${M545_GRIPPER_ROTATE_mass}"/>
+        <inertia ixx="${M545_GRIPPER_ROTATE_ixx}" ixy="${M545_GRIPPER_ROTATE_ixy}"
+		 ixz="${M545_GRIPPER_ROTATE_ixz}" iyy="${M545_GRIPPER_ROTATE_iyy}"
+		 iyz="${M545_GRIPPER_ROTATE_iyz}" izz="${M545_GRIPPER_ROTATE_izz}"/>
+      </inertial>
+      <collision>
+        <origin rpy="${M545_GRIPPER_ROTATE_c_rpy}" xyz="${M545_GRIPPER_ROTATE_c_xyz}"/>
+        <geometry>
+          <box size="${M545_GRIPPER_ROTATE_c_box}"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- With angle bracket -->
+    <!--joint name="J_${M545_GRIPPER_ANGLE_j1_name}" type="${M545_GRIPPER_ANGLE_j1_type}">
+      <parent link="${M545_GRIPPER_ANGLE_name}"/>
+      <child link="${M545_GRIPPER_ROTATE_name}"/>
+      <origin xyz="${M545_GRIPPER_ANGLE_j1_xyz}" rpy="${M545_GRIPPER_ANGLE_j1_rpy}"/>
+  </joint-->
+
+    <!-- Without angle bracket -->
+    <joint name="J_${M545_GRIPPER_BASE_j1_name}" type="${M545_GRIPPER_BASE_j1_type}">
+      <parent link="${M545_GRIPPER_BASE_name}"/>
+      <child link="${M545_GRIPPER_ROTATE_name}"/>
+      <origin xyz="${M545_GRIPPER_BASE_j1_xyz}" rpy="${M545_GRIPPER_BASE_j1_rpy}"/>
+  </joint>
+
+   <xacro:contact_frame    link_name="ENDEFFECTOR_CONTACT"
+                           joint_name="GRIPPER_TO_ENDEFFECTOR_CONTACT"
+                           parent_name="${M545_GRIPPER_ROTATE_name}"
+                           v_origin_xyz="0.9 0 0"
+                           v_origin_rpy="0 0 0"/>
+
+</xacro:macro>
+
+
+<xacro:macro name="m545_gripper_3toothed" params="">
+
+    <xacro:mm_segment link_name="${M545_GRIPPER_3TOOTHED_name}"
+                          v_origin_xyz="${M545_GRIPPER_3TOOTHED_v_xyz}"
+                          v_origin_rpy="${M545_GRIPPER_3TOOTHED_v_rpy}"
+                          mass="${M545_GRIPPER_3TOOTHED_mass}"
+                          ixx="${M545_GRIPPER_3TOOTHED_ixx}"
+                          iyy="${M545_GRIPPER_3TOOTHED_iyy}"
+                          izz="${M545_GRIPPER_3TOOTHED_izz}"
+                          ixy="${M545_GRIPPER_3TOOTHED_ixy}"
+                          ixz="${M545_GRIPPER_3TOOTHED_ixz}"
+                          iyz="${M545_GRIPPER_3TOOTHED_iyz}"
+                          i_origin_xyz="${M545_GRIPPER_3TOOTHED_cog}"
+                          joint_name="J_${M545_GRIPPER_ROTATE_j1_name}"
+                          joint_type="${M545_GRIPPER_ROTATE_j1_type}"
+                          parent="${M545_GRIPPER_ROTATE_name}"
+                          joint_origin="${M545_GRIPPER_ROTATE_j1_xyz}"
+                          joint_axis="${M545_GRIPPER_ROTATE_j1_axis}">
+        <container>
+            <xacro:x_box_collision  size="${M545_GRIPPER_3TOOTHED_c_box}"
+                                    origin_xyz="${M545_GRIPPER_3TOOTHED_c_xyz}"
+                                    origin_rpy="${M545_GRIPPER_3TOOTHED_c_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_GRIPPER_ROTATE_j1_limits/>
+        </container>
+
+    </xacro:mm_segment>
+
+</xacro:macro>
+
+<xacro:macro name="m545_gripper_2toothed" params="">
+
+    <xacro:mm_segment link_name="${M545_GRIPPER_2TOOTHED_name}"
+                          v_origin_xyz="${M545_GRIPPER_2TOOTHED_v_xyz}"
+                          v_origin_rpy="${M545_GRIPPER_2TOOTHED_v_rpy}"
+                          mass="${M545_GRIPPER_2TOOTHED_mass}"
+                          ixx="${M545_GRIPPER_2TOOTHED_ixx}"
+                          iyy="${M545_GRIPPER_2TOOTHED_iyy}"
+                          izz="${M545_GRIPPER_2TOOTHED_izz}"
+                          ixy="${M545_GRIPPER_2TOOTHED_ixy}"
+                          ixz="${M545_GRIPPER_2TOOTHED_ixz}"
+                          iyz="${M545_GRIPPER_2TOOTHED_iyz}"
+                          i_origin_xyz="${M545_GRIPPER_2TOOTHED_cog}"
+                          joint_name="J_${M545_GRIPPER_ROTATE_j2_name}"
+                          joint_type="${M545_GRIPPER_ROTATE_j2_type}"
+                          parent="${M545_GRIPPER_ROTATE_name}"
+                          joint_origin="${M545_GRIPPER_ROTATE_j2_xyz}"
+                          joint_axis="${M545_GRIPPER_ROTATE_j2_axis}">
+        <container>
+            <xacro:x_box_collision  size="${M545_GRIPPER_2TOOTHED_c_box}"
+                                    origin_xyz="${M545_GRIPPER_2TOOTHED_c_xyz}"
+                                    origin_rpy="${M545_GRIPPER_2TOOTHED_c_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_GRIPPER_ROTATE_j2_limits/>
+          <!--mimic joint="J_${M545_GRIPPER_ROTATE_j1_name}" multiplier="-1" offset="0"/-->
+        </container>
+
+    </xacro:mm_segment>
+
+</xacro:macro>
+
+<xacro:macro name="m545_shovel" params="endeffector_type">
+
+    <link name="${M545_SHOVEL_name}">
+      <inertial>
+        <origin xyz="${M545_SHOVEL_cog}" rpy="0 0 0"/>
+        <mass value="${M545_SHOVEL_mass}"/>
+        <inertia ixx="${M545_SHOVEL_ixx}" ixy="${M545_SHOVEL_ixy}"
+		 ixz="${M545_SHOVEL_ixz}" iyy="${M545_SHOVEL_iyy}"
+		 iyz="${M545_SHOVEL_iyz}" izz="${M545_SHOVEL_izz}"/>
+      </inertial>
+      <collision>
+        <origin rpy="${M545_SHOVEL_c_rpy}" xyz="${M545_SHOVEL_c_xyz}"/>
+        <geometry>
+          <box size="${M545_SHOVEL_c_box}"/>
+        </geometry>
+      </collision>
+    </link>
+
+<!-- using_mega_ft == true if in use (false if not in use)-->
+<xacro:unless value="${using_mega_ft}">
+	<joint name="J_${M545_EE_j1_name}" type="${M545_EE_j1_type}">
+	      <parent link="${M545_EE_name}"/>
+	      <child link="${M545_SHOVEL_name}"/>
+	      <origin xyz="${M545_EE_j1_xyz}"/>
+	</joint>
+</xacro:unless>
+<xacro:if value="${using_mega_ft}">
+      <link name="${M545_FT_name}_MOUNT"/>
+      <joint name="J_${M545_FT_name}_MOUNT" type="${M545_FT_type}">
+         <parent link="${M545_FT_name}_MOUNT"/>
+         <child link="${M545_SHOVEL_name}"/>
+         <origin xyz="${M545_FT_MOUNT_xyz}"/>
+      </joint>
+</xacro:if>
+
+   <xacro:contact_frame    link_name="ENDEFFECTOR_CONTACT"
+                           joint_name="SHOVEL_TO_ENDEFFECTOR_CONTACT"
+                           parent_name="${M545_SHOVEL_name}"
+                           v_origin_xyz="0.86 0 -0.14"
+                           v_origin_rpy="0 -0.244 0"/>
+</xacro:macro>
+
+
+<xacro:macro name="m545_endeffector" params="endeffector_type">
+
+    <xacro:mm_segment   link_name="${M545_EE_name}"
+                        v_origin_xyz="${M545_EE_v_xyz}"
+                        v_origin_rpy="${M545_EE_v_rpy}"
+                        mass="${M545_EE_mass}"
+                        ixx="${M545_EE_ixx}"
+                        iyy="${M545_EE_iyy}"
+                        izz="${M545_EE_izz}"
+                        ixy="${M545_EE_ixy}"
+                        ixz="${M545_EE_ixz}"
+                        iyz="${M545_EE_iyz}"
+                        i_origin_xyz="${M545_EE_cog}"
+                        joint_name="J_${M545_ROTO_j1_name}"
+                        joint_type="${M545_ROTO_j1_type}"
+                        parent="${M545_ROTO_name}"
+                        joint_origin="${M545_ROTO_j1_xyz}"
+                        joint_axis="${M545_ROTO_j1_axis}">
+        <container>
+            <xacro:x_box_collision  size="${M545_ROTO_c_box}"
+                                    origin_xyz="${M545_EE_c_xyz}"
+                                    origin_rpy="${M545_EE_c_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_ROTO_j1_limits/>
+        </container>
+
+    </xacro:mm_segment>
+
+
+    <!-- Mega F/T Sensor-->
+    <!-- using_mega_ft == true if in use (false if not in use)-->
+    <xacro:if value="${using_mega_ft}">
+        <joint name="${M545_FT_name}_FRAME" type="fixed">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <parent link="${M545_EE_name}"/>
+            <child link="${M545_FT_name}_mounting"/>
+        </joint>
+
+        <xacro:ROKUBIMEGA prefix="${M545_FT_name}"/>
+
+        <joint name="J_${M545_FT_name}" type="fixed">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <parent link="${M545_FT_name}_wrench"/>
+            <child link="${M545_FT_name}_MOUNT"/>
+            <limit effort="0" lower="-0.0" upper="0.0" velocity="0"/>
+        </joint>
+
+        <!-- F/T sensor plugin for EE -->
+        <gazebo reference="J_${M545_FT_name}">
+            <provideFeedback>true</provideFeedback>
+            <disableFixedJointLumping>true</disableFixedJointLumping>
+            <preserveFixedJoint>true</preserveFixedJoint>
+        </gazebo>
+
+        <!-- plugin for gazebo-->
+        <xacro:if value="$(arg simulation)">
+            <xacro:arg name="ft_update_rate" default="100"/>
+
+            <!-- Custom ft sensor plugin -->
+            <gazebo>
+                <plugin name="gazebo_ee_force_torque_sensor" filename="librokubimini_cosmo_gazebo_plugin.so">
+                    <statePublisherRate>$(arg ft_update_rate)</statePublisherRate>
+                    <jointName>J_${M545_FT_name}</jointName>
+                    <topicName>/ft_readings</topicName>
+                    <forceOffset>0.0 0.0 0.0</forceOffset>
+                    <forceDrift>0.0 0.0 0.0</forceDrift>
+                    <torqueOffset>0.0 0.0 0.0</torqueOffset>
+                    <torqueDrift>0.0 0.0 0.0</torqueDrift>
+                </plugin>
+            </gazebo>
+        </xacro:if>
+
+    </xacro:if>
+
+    <xacro:if value="${endeffector_type == 0 or endeffector_type == 2}"> <!-- shovel 1500 == 0, gripper == 1, shovel 1300 = 2 change in launch file -->
+        <xacro:m545_shovel endeffector_type="$(arg endeffector_type)"/>
+    </xacro:if>
+    <xacro:if value="${endeffector_type == 1}">
+        <xacro:m545_gripper_base/>
+        <xacro:m545_gripper_rotate/>
+        <!--xacro:m545_gripper_angle/-->
+        <xacro:m545_gripper_3toothed/>
+        <xacro:m545_gripper_2toothed/>
+        <gazebo>
+            <plugin name="Plugin_Gripper_M545" filename="$(arg gripper_plugin_file)"/>
+        </gazebo>
+    </xacro:if>
+
+</xacro:macro>
+
+
+<xacro:macro name="m545_um_attachment" params="">
+
+    <xacro:mm_segment   link_name="${M545_UM_ATTACHMENT_name}"
+                        v_origin_xyz="${M545_UM_ATTACHMENT_v_xyz}"
+                        v_origin_rpy="${M545_UM_ATTACHMENT_v_rpy}"
+                        mass="${M545_UM_ATTACHMENT_mass}"
+                        ixx="${M545_UM_ATTACHMENT_ixx}"
+                        iyy="${M545_UM_ATTACHMENT_iyy}"
+                        izz="${M545_UM_ATTACHMENT_izz}"
+                        ixy="${M545_UM_ATTACHMENT_ixy}"
+                        ixz="${M545_UM_ATTACHMENT_ixz}"
+                        iyz="${M545_UM_ATTACHMENT_iyz}"
+                        i_origin_xyz="${M545_UM_ATTACHMENT_cog}"
+                        joint_name="J_${M545_Base_j4_name}"
+                        joint_type="${M545_Base_j4_type}"
+                        parent="${M545_Base_name}"
+                        joint_origin="${M545_Base_j4_xyz}"
+                        joint_axis="${M545_Base_j4_axis}">
+        <container>
+            <xacro:x_box_collision  size="${M545_UM_ATTACHMENT_c_box}"
+                                    origin_xyz="${M545_UM_ATTACHMENT_c_xyz}"
+                                    origin_rpy="${M545_UM_ATTACHMENT_c_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_Base_j4_limits/>
+        </container>
+	</xacro:mm_segment>
+
+</xacro:macro>
+
+<xacro:macro name="m545_um_mass" params="">
+
+    <xacro:mm_segment   link_name="${M545_UM_MASS_name}"
+                        v_origin_xyz="${M545_UM_MASS_v_xyz}"
+                        v_origin_rpy="${M545_UM_MASS_v_rpy}"
+                        mass="${M545_UM_MASS_mass}"
+                        ixx="${M545_UM_MASS_ixx}"
+                        iyy="${M545_UM_MASS_iyy}"
+                        izz="${M545_UM_MASS_izz}"
+                        ixy="${M545_UM_MASS_ixy}"
+                        ixz="${M545_UM_MASS_ixz}"
+                        iyz="${M545_UM_MASS_iyz}"
+                        i_origin_xyz="${M545_UM_MASS_cog}"
+                        joint_name="J_${M545_UM_ATTACHMENT_j1_name}"
+                        joint_type="${M545_UM_ATTACHMENT_j1_type}"
+                        parent="${M545_UM_ATTACHMENT_name}"
+                        joint_origin="${M545_UM_ATTACHMENT_j1_xyz}"
+                        joint_axis="${M545_UM_ATTACHMENT_j1_axis}">
+        <container>
+            <xacro:x_box_collision  size="${M545_UM_MASS_c_box}"
+                                    origin_xyz="${M545_UM_MASS_c_xyz}"
+                                    origin_rpy="${M545_UM_MASS_c_rpy}"/>
+        </container>
+
+        <container>
+          <xacro:M545_UM_ATTACHMENT_j1_limits/>
+        </container>
+	</xacro:mm_segment>
+
+    <xacro:contact_frame   link_name="DUMMY_CONTACT"
+                           joint_name="UM_MASS_TO_DUMMY_CONTACT"
+                           parent_name="${M545_UM_MASS_name}"
+                           v_origin_xyz="0 0 0"
+                           v_origin_rpy="0 0 0" />
+
+</xacro:macro>
+
+
+</robot>

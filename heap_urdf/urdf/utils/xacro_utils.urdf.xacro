@@ -1,0 +1,61 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!-- Some useful property definitions -->
+<xacro:property name="x_zero3" value="0 0 0"/>
+
+<!-- Joint tag allowing for full customization with settings parameter (e.g. mimic joints) -->
+<xacro:macro name="x_joint" params="name type parent child origin axis **settings">
+  <joint name="${name}" type="${type}">
+    <parent link="${parent}"/>
+    <child link="${child}"/>
+    <origin xyz="${origin}" />
+    <axis xyz="${axis}"/>
+    <xacro:insert_block name="settings"/>
+  </joint>
+</xacro:macro>
+
+<!-- Collision tag for geometry with offset (default: zero offset) -->
+<xacro:macro name="x_collision" params="origin_xyz:=${x_zero3} origin_rpy:=${x_zero3} *geometry">
+  <collision>
+    <geometry>
+      <xacro:insert_block name="geometry"/>
+    </geometry>
+    <origin xyz="${origin_xyz}" rpy="${origin_rpy}"/>
+  </collision>
+</xacro:macro>
+
+<!-- Collision tag for box with offset (default: zero offset) -->
+<xacro:macro name="x_box_collision" params="size origin_xyz:=${x_zero3} origin_rpy:=${x_zero3}">
+  <xacro:x_collision origin_xyz="${origin_xyz}" origin_rpy="${origin_rpy}" >
+    <box size="${size}"/>
+  </xacro:x_collision>
+</xacro:macro>
+
+<!-- Collision tag for cylinder with offset (default: zero offset) -->
+<xacro:macro name="x_cylinder_collision" params="radius length origin_xyz:=${x_zero3} origin_rpy:=${x_zero3}">
+  <xacro:x_collision origin_xyz="${origin_xyz}" origin_rpy="${origin_rpy}" >
+    <cylinder radius="${radius}" length="${length}"/>
+  </xacro:x_collision>
+</xacro:macro>
+
+<!-- Inertial tag with offset (default: zero offset) and off-diagonal inertia components (default: zero offdiagonals) -->
+<xacro:macro name="x_inertial" params="mass ixx iyy izz ixy:=0 ixz:=0 iyz:=0 
+                                       origin_xyz:=${x_zero3} origin_rpy:=${x_zero3}">
+  <inertial>
+    <origin xyz="${origin_xyz}" rpy="${origin_rpy}"/>
+    <mass value="${mass}" />
+    <inertia  ixx="${ixx}"  ixy="${ixy}"  ixz="${ixz}"
+                            iyy="${iyy}"  iyz="${iyz}" 
+                                          izz="${izz}"/>
+  </inertial>
+</xacro:macro>
+
+<!-- Link tag fully customizable -->
+<xacro:macro name="x_link" params="name **entries">
+  <link name="${name}">
+    <xacro:insert_block name="entries"/>
+  </link>
+</xacro:macro>
+
+</robot>
