@@ -20,7 +20,7 @@ The [./heap_urdf](./heap_urdf) directory contains a URDF with the full HEAP coll
 * Pascal Egli, Dominique Gaschen, Simon Kerscher, Dominic Jud, Marco Hutter, "Soil-Adaptive Excavation Using 
 Reinforcement Learning", IROS2022
   * [Paper](https://www.research-collection.ethz.ch/handle/20.500.11850/557541)
-* Julian Nubert, Etienne Walther, Shehryar Khattak, Marco Hugger, "Learning-based Localizability Estimation for Robust 
+* Julian Nubert, Etienne Walther, Shehryar Khattak, Marco Hutter, "Learning-based Localizability Estimation for Robust 
 LiDAR Localization", IROS2022
   * Code: [https://github.com/leggedrobotics/L3E](https://github.com/leggedrobotics/L3E)
   * [Paper](https://arxiv.org/abs/2203.05698)
